@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5669737084b779a4659dfdd083e378a6 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <h3 align="center" style="font-size:16px"><b>Maritime Chess Board - H3 Hexagonal Cells</b></h3>
+    
+    
+            <div class="folium-map" id="map_5669737084b779a4659dfdd083e378a6" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_5669737084b779a4659dfdd083e378a6 = L.map(
+                "map_5669737084b779a4659dfdd083e378a6",
+                {
+                    center: [-2.780567435882599, 83.71087165103549],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 8,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_754bf8c9522c7bdf3925316954cbd3d9 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_754bf8c9522c7bdf3925316954cbd3d9.addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+            var polygon_ad0e5dd0cc2644abb854a9588184f14e = L.polygon(
+                [[118.56667992768625, -20.30760900204216], [118.56216588350067, -20.33517838162022], [118.58705038779424, -20.35627093626674], [118.61645986787609, -20.34980023180614], [118.62097948354601, -20.322226987161553], [118.59608404815552, -20.301128308408092], [118.56667992768625, -20.30760900204216]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_0bec1bafc159134d6938a9fc332cf501 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4b697a4944c3b1095bb885964cad0e4f = $(`<div id="html_4b697a4944c3b1095bb885964cad0e4f" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a79a66fffffff<br>             Traffic: 401 messages<br>             Ships: 266<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 9.6m<br>             Center: (-20.329, 118.592)             </div>`)[0];
+                popup_0bec1bafc159134d6938a9fc332cf501.setContent(html_4b697a4944c3b1095bb885964cad0e4f);
+            
+        
+
+        polygon_ad0e5dd0cc2644abb854a9588184f14e.bindPopup(popup_0bec1bafc159134d6938a9fc332cf501)
+        ;
+
+        
+    
+    
+            var polygon_b6fdb736f4e15f9c4cfe0e049400cd0b = L.polygon(
+                [[118.57339948277078, -20.093090109505486], [118.56888307099399, -20.120763478195308], [118.5937786249217, -20.141895951648245], [118.62320152820467, -20.13536116220307], [118.62772351536917, -20.107683855100216], [118.60281702437047, -20.086545272228758], [118.57339948277078, -20.093090109505486]],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.5, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_f8520426b5b0d0818ac80a0d41bb274b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d43fc70c34a00145adc0c24039293a66 = $(`<div id="html_d43fc70c34a00145adc0c24039293a66" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a6b4d67ffffff<br>             Traffic: 200 messages<br>             Ships: 132<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 8.7m<br>             Center: (-20.114, 118.598)             </div>`)[0];
+                popup_f8520426b5b0d0818ac80a0d41bb274b.setContent(html_d43fc70c34a00145adc0c24039293a66);
+            
+        
+
+        polygon_b6fdb736f4e15f9c4cfe0e049400cd0b.bindPopup(popup_f8520426b5b0d0818ac80a0d41bb274b)
+        ;
+
+        
+    
+    
+            var polygon_67737be9e2cb473d3857804aa52bd0a7 = L.polygon(
+                [[118.51911014224824, -20.078486361177585], [118.51459930776979, -20.10615577432811], [118.53948029469333, -20.127291280062025], [118.56888307099399, -20.120763478195308], [118.57339948277078, -20.093090109505486], [118.54850754144687, -20.071948494600363], [118.51911014224824, -20.078486361177585]],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.5, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_f11873695433d9de1de97b29c704d87b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_787e1870d108ae4197ec9274cba04b84 = $(`<div id="html_787e1870d108ae4197ec9274cba04b84" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a6b4d6fffffff<br>             Traffic: 194 messages<br>             Ships: 118<br>             Avg Speed: 0.2 knots<br>             Avg Draught: 8.7m<br>             Center: (-20.100, 118.544)             </div>`)[0];
+                popup_f11873695433d9de1de97b29c704d87b.setContent(html_787e1870d108ae4197ec9274cba04b84);
+            
+        
+
+        polygon_67737be9e2cb473d3857804aa52bd0a7.bindPopup(popup_f11873695433d9de1de97b29c704d87b)
+        ;
+
+        
+    
+    
+            var polygon_a2fea4054a7d4c74a65a77eca1aadc85 = L.polygon(
+                [[117.14900444019877, -20.561131292068115], [117.14464259484217, -20.588286979131396], [117.1691063353453, -20.609335683909435], [117.19794325016858, -20.60323486462855], [117.20231069252482, -20.57607510873149], [117.17783562332659, -20.555020237426234], [117.14900444019877, -20.561131292068115]],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.5, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_92ee2b7eee92b233b9ce9d541c62a473 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_19a6ad773a817be69c58adeb0a558dcf = $(`<div id="html_19a6ad773a817be69c58adeb0a558dcf" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a6a6577ffffff<br>             Traffic: 181 messages<br>             Ships: 125<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 9.7m<br>             Center: (-20.582, 117.173)             </div>`)[0];
+                popup_92ee2b7eee92b233b9ce9d541c62a473.setContent(html_19a6ad773a817be69c58adeb0a558dcf);
+            
+        
+
+        polygon_a2fea4054a7d4c74a65a77eca1aadc85.bindPopup(popup_92ee2b7eee92b233b9ce9d541c62a473)
+        ;
+
+        
+    
+    
+            var polygon_4928c7e63b653e56aa775659de7d01d8 = L.polygon(
+                [[-40.1944837618888, -20.426611644034683], [-40.1655255890199, -20.4045082707369], [-40.17204287746379, -20.371002968992784], [-40.20751560007332, -20.359601073841308], [-40.236474514714075, -20.381707159093782], [-40.22995996922247, -20.41521242359793], [-40.1944837618888, -20.426611644034683]],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.5, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_7fa9ec08a267e06ffb701b33691ea4b9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7d96c19a2099b6dca8d490a9f5c164eb = $(`<div id="html_7d96c19a2099b6dca8d490a9f5c164eb" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a895777ffffff<br>             Traffic: 167 messages<br>             Ships: 80<br>             Avg Speed: 0.2 knots<br>             Avg Draught: 9.0m<br>             Center: (-20.393, -40.201)             </div>`)[0];
+                popup_7fa9ec08a267e06ffb701b33691ea4b9.setContent(html_7d96c19a2099b6dca8d490a9f5c164eb);
+            
+        
+
+        polygon_4928c7e63b653e56aa775659de7d01d8.bindPopup(popup_7fa9ec08a267e06ffb701b33691ea4b9)
+        ;
+
+        
+    
+    
+            var polygon_27325089620e134b5a2adf607b8a2336 = L.polygon(
+                [[108.37119290817844, 21.548620210654846], [108.37534700376223, 21.58284905999459], [108.34546000483712, 21.60457117068364], [108.31141277473748, 21.592062795781562], [108.30726404542905, 21.557827018373136], [108.33715717579764, 21.536106540842884], [108.37119290817844, 21.548620210654846]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_80543a9323d25d9327f04dde16c4fca9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_62d72d0cb1f3ec2577866d227c42e502 = $(`<div id="html_62d72d0cb1f3ec2577866d227c42e502" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 864150a37ffffff<br>             Traffic: 151 messages<br>             Ships: 106<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 15.8m<br>             Center: (21.570, 108.341)             </div>`)[0];
+                popup_80543a9323d25d9327f04dde16c4fca9.setContent(html_62d72d0cb1f3ec2577866d227c42e502);
+            
+        
+
+        polygon_27325089620e134b5a2adf607b8a2336.bindPopup(popup_80543a9323d25d9327f04dde16c4fca9)
+        ;
+
+        
+    
+    
+            var polygon_6575fb07ca069bd0eedd0c16c9348c20 = L.polygon(
+                [[116.697968986075, -20.603785881387797], [116.69365596682907, -20.630825043895957], [116.71798180729475, -20.65186351338318], [116.74663211055656, -20.645868995238153], [116.75095073044665, -20.61882569221598], [116.72661344662612, -20.597781044368535], [116.697968986075, -20.603785881387797]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_60a32f8ca5d91a6d580842dacce4f742 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b95f360cb525fcc0f793206be7ba4b62 = $(`<div id="html_b95f360cb525fcc0f793206be7ba4b62" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a6a63a7ffffff<br>             Traffic: 146 messages<br>             Ships: 108<br>             Avg Speed: 0.0 knots<br>             Avg Draught: 10.1m<br>             Center: (-20.625, 116.722)             </div>`)[0];
+                popup_60a32f8ca5d91a6d580842dacce4f742.setContent(html_b95f360cb525fcc0f793206be7ba4b62);
+            
+        
+
+        polygon_6575fb07ca069bd0eedd0c16c9348c20.bindPopup(popup_60a32f8ca5d91a6d580842dacce4f742)
+        ;
+
+        
+    
+    
+            var polygon_9736383631ab703a503546c6cd34ec79 = L.polygon(
+                [[149.40056366449102, -21.213901574055367], [149.40591612215613, -21.179354718447918], [149.3757866216988, -21.158353655094615], [149.34030108482062, -21.17188319862774], [149.3349251939406, -21.206423270602308], [149.36505826479888, -21.227440589518118], [149.40056366449102, -21.213901574055367]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_db57febb9f8c6e30010dcb228305efe8 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_31845352125d3d1e433edf19fad2976b = $(`<div id="html_31845352125d3d1e433edf19fad2976b" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 869d01b97ffffff<br>             Traffic: 126 messages<br>             Ships: 51<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 9.3m<br>             Center: (-21.193, 149.370)             </div>`)[0];
+                popup_db57febb9f8c6e30010dcb228305efe8.setContent(html_31845352125d3d1e433edf19fad2976b);
+            
+        
+
+        polygon_9736383631ab703a503546c6cd34ec79.bindPopup(popup_db57febb9f8c6e30010dcb228305efe8)
+        ;
+
+        
+    
+    
+            var polygon_2c58dec802fa08b9020d0f9858989baa = L.polygon(
+                [[151.49885128811297, -23.837058240655907], [151.50356570956416, -23.801716484490655], [151.47195398440533, -23.78059431594696], [151.43562181571184, -23.794798254694445], [151.43088181496861, -23.830134836173684], [151.46249955477234, -23.851272661092896], [151.49885128811297, -23.837058240655907]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_2602eb66ca263f8876a2c9201730403f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b554e52660dfe7d5bba80ee398fdb363 = $(`<div id="html_b554e52660dfe7d5bba80ee398fdb363" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 869d20a47ffffff<br>             Traffic: 124 messages<br>             Ships: 54<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 9.5m<br>             Center: (-23.816, 151.467)             </div>`)[0];
+                popup_2602eb66ca263f8876a2c9201730403f.setContent(html_b554e52660dfe7d5bba80ee398fdb363);
+            
+        
+
+        polygon_2c58dec802fa08b9020d0f9858989baa.bindPopup(popup_2602eb66ca263f8876a2c9201730403f)
+        ;
+
+        
+    
+    
+            var polygon_3b47af6443f1eb9757985c79a88b2b74 = L.polygon(
+                [[149.4662227463932, -21.22135609253702], [149.47155174181543, -21.186802503019994], [149.44140025247748, -21.165809935535588], [149.40591612215613, -21.179354718447918], [149.40056366449102, -21.213901574055367], [149.4307187910791, -21.234910387521918], [149.4662227463932, -21.22135609253702]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_a5f143f5e270b2dd7376c4314ac9df7b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_af69773f5dc2e8901b40f7eb30cf3e56 = $(`<div id="html_af69773f5dc2e8901b40f7eb30cf3e56" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 869d018cfffffff<br>             Traffic: 122 messages<br>             Ships: 48<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 9.0m<br>             Center: (-21.200, 149.436)             </div>`)[0];
+                popup_a5f143f5e270b2dd7376c4314ac9df7b.setContent(html_af69773f5dc2e8901b40f7eb30cf3e56);
+            
+        
+
+        polygon_3b47af6443f1eb9757985c79a88b2b74.bindPopup(popup_a5f143f5e270b2dd7376c4314ac9df7b)
+        ;
+
+        
+    
+    
+            var polygon_9f8efd248932b6c17a5e6a9330f774dd = L.polygon(
+                [[-75.265481610596, -15.202053277554592], [-75.29566215556049, -15.223571775055113], [-75.29192059104976, -15.259476405742225], [-75.25799250502385, -15.2738565784999], [-75.2278154462217, -15.252334729870578], [-75.23156298372625, -15.216436062850121], [-75.265481610596, -15.202053277554592]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_ab5dd0ae73357ebdd00c497e4cfeae5b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_481a3165f45e966c6b45353c369be651 = $(`<div id="html_481a3165f45e966c6b45353c369be651" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 868e6a78fffffff<br>             Traffic: 110 messages<br>             Ships: 43<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 11.1m<br>             Center: (-15.238, -75.262)             </div>`)[0];
+                popup_ab5dd0ae73357ebdd00c497e4cfeae5b.setContent(html_481a3165f45e966c6b45353c369be651);
+            
+        
+
+        polygon_9f8efd248932b6c17a5e6a9330f774dd.bindPopup(popup_ab5dd0ae73357ebdd00c497e4cfeae5b)
+        ;
+
+        
+    
+    
+            var polygon_5df2aa9538339ebb3217d0581ec609ff = L.polygon(
+                [[103.96631676355899, 1.2467148874449867], [103.96983329023058, 1.282279878422776], [103.9407618876957, 1.302472603177052], [103.9081712698745, 1.2870926327040997], [103.90466037930244, 1.2515214685356868], [103.93373446741576, 1.2313364447864636], [103.96631676355899, 1.2467148874449867]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_eb54997dceebc723905d73ac2ee4df6a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cad63bb210f91840f80f24a7511c09b6 = $(`<div id="html_cad63bb210f91840f80f24a7511c09b6" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 866526aefffffff<br>             Traffic: 106 messages<br>             Ships: 93<br>             Avg Speed: 0.3 knots<br>             Avg Draught: 14.5m<br>             Center: (1.267, 103.937)             </div>`)[0];
+                popup_eb54997dceebc723905d73ac2ee4df6a.setContent(html_cad63bb210f91840f80f24a7511c09b6);
+            
+        
+
+        polygon_5df2aa9538339ebb3217d0581ec609ff.bindPopup(popup_eb54997dceebc723905d73ac2ee4df6a)
+        ;
+
+        
+    
+    
+            var polygon_2a7a47629ccc22a5de30a36413a06e93 = L.polygon(
+                [[119.83210184107683, 35.24908374478682], [119.83728187338666, 35.27603740757312], [119.81020926379759, 35.29746211144564], [119.77794329873079, 35.29193535097871], [119.77276579481769, 35.264975749497765], [119.7998517230058, 35.243548844438315], [119.83210184107683, 35.24908374478682]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_21d57aa4ab39dd0cb600d064f2bdfbd6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b927080e7054e9d707e58730b2344a41 = $(`<div id="html_b927080e7054e9d707e58730b2344a41" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 8630a322fffffff<br>             Traffic: 100 messages<br>             Ships: 78<br>             Avg Speed: 0.2 knots<br>             Avg Draught: 17.2m<br>             Center: (35.271, 119.805)             </div>`)[0];
+                popup_21d57aa4ab39dd0cb600d064f2bdfbd6.setContent(html_b927080e7054e9d707e58730b2344a41);
+            
+        
+
+        polygon_2a7a47629ccc22a5de30a36413a06e93.bindPopup(popup_21d57aa4ab39dd0cb600d064f2bdfbd6)
+        ;
+
+        
+    
+    
+            var polygon_6470f5cc9d4c29711047f5a37004559d = L.polygon(
+                [[4.101224546151942, 51.99760587617089], [4.0906405686418, 51.96737983034388], [4.128319194819252, 51.94982772237148], [4.17660599348394, 51.96249575695363], [4.187234771804163, 51.99272503541237], [4.149531956508364, 52.010283054797895], [4.101224546151942, 51.99760587617089]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_fe35fb01a5030b6ca7fbc1623abdfccc = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a02643ecb0d2135766f85839e1045012 = $(`<div id="html_a02643ecb0d2135766f85839e1045012" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86196bb97ffffff<br>             Traffic: 98 messages<br>             Ships: 53<br>             Avg Speed: 0.0 knots<br>             Avg Draught: 17.5m<br>             Center: (51.980, 4.139)             </div>`)[0];
+                popup_fe35fb01a5030b6ca7fbc1623abdfccc.setContent(html_a02643ecb0d2135766f85839e1045012);
+            
+        
+
+        polygon_6470f5cc9d4c29711047f5a37004559d.bindPopup(popup_fe35fb01a5030b6ca7fbc1623abdfccc)
+        ;
+
+        
+    
+    
+            var polygon_3cedbf7ebffdb1ea260f2cb23335641b = L.polygon(
+                [[118.4750233818061, 38.92275281126542], [118.45847585256112, 38.895401776744805], [118.47541320064788, 38.872928799912586], [118.50887247988662, 38.87779640500317], [118.52542736981964, 38.905125819836236], [118.50851564005656, 38.92760924133628], [118.4750233818061, 38.92275281126542]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_35aa47f5c099a7577b0ab55f832d6326 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9cc877854c12c427363f6b8b36fe3860 = $(`<div id="html_9cc877854c12c427363f6b8b36fe3860" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 863189907ffffff<br>             Traffic: 94 messages<br>             Ships: 76<br>             Avg Speed: 0.3 knots<br>             Avg Draught: 16.1m<br>             Center: (38.900, 118.492)             </div>`)[0];
+                popup_35aa47f5c099a7577b0ab55f832d6326.setContent(html_9cc877854c12c427363f6b8b36fe3860);
+            
+        
+
+        polygon_3cedbf7ebffdb1ea260f2cb23335641b.bindPopup(popup_35aa47f5c099a7577b0ab55f832d6326)
+        ;
+
+        
+    
+    
+            var polygon_a53b2bb0e062cc99bf41263459ead470 = L.polygon(
+                [[116.54504338883326, -20.34795228295799], [116.54074496595159, -20.37508082465437], [116.5650349190811, -20.396163266225106], [116.59363478688103, -20.39012332449857], [116.59793881637306, -20.362990517198792], [116.5736373716259, -20.341901913773423], [116.54504338883326, -20.34795228295799]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_31ebf37d3d710dbd4afe3f1ec5143010 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1b1b521e3f47e5e7d072c1ec553add8b = $(`<div id="html_1b1b521e3f47e5e7d072c1ec553add8b" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a6a2937ffffff<br>             Traffic: 90 messages<br>             Ships: 62<br>             Avg Speed: 0.2 knots<br>             Avg Draught: 8.9m<br>             Center: (-20.369, 116.569)             </div>`)[0];
+                popup_31ebf37d3d710dbd4afe3f1ec5143010.setContent(html_1b1b521e3f47e5e7d072c1ec553add8b);
+            
+        
+
+        polygon_a53b2bb0e062cc99bf41263459ead470.bindPopup(popup_31ebf37d3d710dbd4afe3f1ec5143010)
+        ;
+
+        
+    
+    
+            var polygon_f0f4dd0c60acb55d704c6881362cc39f = L.polygon(
+                [[120.16314731846096, 31.893110543492547], [120.16826937504597, 31.921466765815737], [120.14173212356599, 31.943365857091404], [120.1100597487021, 31.9369105255821], [120.10494005272514, 31.908546959710804], [120.13149036666589, 31.88664606657412], [120.16314731846096, 31.893110543492547]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_04e708716afe1b254579087e0235f5a5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_88026763cc9655ab7d622dfd22d85cbe = $(`<div id="html_88026763cc9655ab7d622dfd22d85cbe" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86309c72fffffff<br>             Traffic: 87 messages<br>             Ships: 66<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 11.0m<br>             Center: (31.915, 120.137)             </div>`)[0];
+                popup_04e708716afe1b254579087e0235f5a5.setContent(html_88026763cc9655ab7d622dfd22d85cbe);
+            
+        
+
+        polygon_f0f4dd0c60acb55d704c6881362cc39f.bindPopup(popup_04e708716afe1b254579087e0235f5a5)
+        ;
+
+        
+    
+    
+            var polygon_49a0f08fb356cc5fa9fb66ab620ac49e = L.polygon(
+                [[-14.753214445165385, 10.408249304936401], [-14.782267056018476, 10.39172844173631], [-14.782817706278664, 10.361582536690447], [-14.754334917052404, 10.347961455763189], [-14.725296253563084, 10.364470755563257], [-14.72472643503852, 10.394612692684989], [-14.753214445165385, 10.408249304936401]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_9bf4e810da5ffaea943c0d1658a098af = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e7a4638bafbea4dd5cd2d7476ba29530 = $(`<div id="html_e7a4638bafbea4dd5cd2d7476ba29530" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 8654c42b7ffffff<br>             Traffic: 86 messages<br>             Ships: 51<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 11.0m<br>             Center: (10.378, -14.754)             </div>`)[0];
+                popup_9bf4e810da5ffaea943c0d1658a098af.setContent(html_e7a4638bafbea4dd5cd2d7476ba29530);
+            
+        
+
+        polygon_49a0f08fb356cc5fa9fb66ab620ac49e.bindPopup(popup_9bf4e810da5ffaea943c0d1658a098af)
+        ;
+
+        
+    
+    
+            var polygon_5681ae73dab384fffa40779e255d1ca0 = L.polygon(
+                [[117.32217144056665, -20.524347780367982], [117.31779078041323, -20.551557603307174], [117.34230761805766, -20.57261351770377], [117.37121639991592, -20.566465766284963], [117.37560265540272, -20.539251895406792], [117.35107453399478, -20.518189820349868], [117.32217144056665, -20.524347780367982]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_d105c6bb6c45f0806f4ef5a459461f7c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_63cffa2377033018bbbf2549d9f3987e = $(`<div id="html_63cffa2377033018bbbf2549d9f3987e" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 86a79b24fffffff<br>             Traffic: 83 messages<br>             Ships: 56<br>             Avg Speed: 0.6 knots<br>             Avg Draught: 9.1m<br>             Center: (-20.545, 117.347)             </div>`)[0];
+                popup_d105c6bb6c45f0806f4ef5a459461f7c.setContent(html_63cffa2377033018bbbf2549d9f3987e);
+            
+        
+
+        polygon_5681ae73dab384fffa40779e255d1ca0.bindPopup(popup_d105c6bb6c45f0806f4ef5a459461f7c)
+        ;
+
+        
+    
+    
+            var polygon_5861573c17a3e5655a499f556d930d9e = L.polygon(
+                [[-44.23035081793318, -2.424511471417692], [-44.202009740250865, -2.4010306963799057], [-44.2081570193847, -2.3647969070337136], [-44.24264180620744, -2.3520445872401994], [-44.27098073494321, -2.375523313642394], [-44.264837029393256, -2.411756405057475], [-44.23035081793318, -2.424511471417692]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.4, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_5669737084b779a4659dfdd083e378a6);
+        
+    
+        var popup_6dab6cf8050ec9454980432fbc33d517 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a3c78a8cce519d099c3ff486a24a5585 = $(`<div id="html_a3c78a8cce519d099c3ff486a24a5585" style="width: 100.0%; height: 100.0%;">             <b>H3 Chess Square</b><br>             Cell ID: 8680088efffffff<br>             Traffic: 82 messages<br>             Ships: 54<br>             Avg Speed: 0.1 knots<br>             Avg Draught: 8.8m<br>             Center: (-2.388, -44.236)             </div>`)[0];
+                popup_6dab6cf8050ec9454980432fbc33d517.setContent(html_a3c78a8cce519d099c3ff486a24a5585);
+            
+        
+
+        polygon_5861573c17a3e5655a499f556d930d9e.bindPopup(popup_6dab6cf8050ec9454980432fbc33d517)
+        ;
+
+        
+    
+</script>
+</html>

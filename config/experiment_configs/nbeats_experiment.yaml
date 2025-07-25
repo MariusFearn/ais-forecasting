@@ -1,0 +1,31 @@
+# N-BEATS Experiment Configuration
+# Extends default.yaml with N-BEATS-specific parameters
+
+defaults:
+  - ../default
+
+model:
+  name: "nbeats"
+  widths: [32, 512]
+  backcast_loss_ratio: 0.0
+  
+training:
+  max_epochs: 80
+  learning_rate: 0.01
+  
+optimization:
+  study_name: "nbeats_optimization"
+  param_space:
+    widths:
+      type: "categorical"
+      choices: [[32, 512], [64, 256], [128, 512], [256, 1024]]
+    learning_rate:
+      type: "float"
+      low: 0.001
+      high: 0.1
+      log: true
+    backcast_loss_ratio:
+      type: "float"
+      low: 0.0
+      high: 1.0
+      step: 0.1
