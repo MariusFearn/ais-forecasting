@@ -1,35 +1,34 @@
-# Basic Runtime Instructions
+# AIS Vessel Trajectory Prediction - Quick Reference
 
-## Project Focus
-**Simple Goal**: Predict which H3 cell a vessel will visit next using machine learning.
+## 🎯 Project Goal
+Predict which H3 cell a vessel will visit next using machine learning.
 
-## Current Status
-- ✅ Phase 1: H3 indexing and data foundation complete
-- ✅ Phase 2: 65 vessel features extracted and validated  
-- 🎯 Phase 3: Create simple ML classifier for next-cell prediction
+## ✅ Current Working Status
+- ✅ Phase 1-2 Complete: 65 vessel features extracted
+- ✅ Working ML model: Random Forest classifier
+- 🎯 Current accuracy: 5% (target: >60%)
 
-## Quick Commands
+## 🚀 Quick Commands
 
-### Environment Setup
 ```bash
-cd /home/marius/repo_linux/ais-forecasting
-pip install -r requirements.txt
+# Test feature extraction (100 records)
+python scripts/test_simple.py
+
+# Create training data (199 sequences) 
+python scripts/create_simple_training_data.py
+
+# Train Random Forest model
+python scripts/train_simple_model.py
 ```
 
-### Data Processing
-```python
-# Load vessel features (Phase 2 output)
-import pickle
-with open('data/processed/vessel_features_sample.pkl', 'rb') as f:
-    features = pickle.load(f)
-```
+## 📁 Key Files
+- `data/raw/` - AIS data (2018-2025)
+- `src/features/vessel_h3_tracker.py` - GPS → H3 conversion
+- `src/features/vessel_features.py` - 65 feature extraction
+- `data/processed/training_sets/` - ML training data
+- `data/models/final_models/` - Trained models
 
-### Next Steps (Phase 3)
-1. Create training data: `scripts/create_training_data.py`
-2. Train classifier: `scripts/train_model.py`  
-3. Evaluate results: `scripts/evaluate_model.py`
-
-## Success Criteria
-- >60% accuracy predicting next H3 cell
-- <15km average distance error
-- Working visualization of predictions
+## 🎯 Next Steps
+1. Scale up training data (more vessels)
+2. Try XGBoost model
+3. Add visualization tools

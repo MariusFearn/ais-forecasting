@@ -2,116 +2,117 @@
 
 A simple machine learning system for predicting individual vessel movements using AIS data and H3 geospatial indexing.
 
-## Simple Goal
+## 🎯 Simple Goal
 **Predict which H3 cell a vessel will visit next** based on its current position and movement patterns.
 
-## Why This Approach?
-- ✅ Clear input → output relationship  
-- ✅ Easy to evaluate (classification accuracy)
-- ✅ Builds on completed Phase 2 work (65 features)
-- ✅ Manageable scope for first ML success
+## ✅ Current Status
 
-## Current Status
-
-### ✅ COMPLETED (Phase 1-2):
-- **Data**: 8 years Cape Town AIS data (2018-2025)
+### COMPLETED (Phase 1-2):
+- **Data**: 8 years Cape Town AIS data (2018-2025, 8.3M+ records)
 - **H3 Indexing**: Resolution 5 (8.54km edge length) 
 - **Vessel Tracking**: Convert GPS → H3 cell sequences
-- **Feature Engineering**: 65 vessel features extracted
-- **Validation**: Tested on real vessel (364-day journey)
+- **Feature Engineering**: 65 vessel features extracted and validated
+- **Working ML Pipeline**: Random Forest classifier trained (91.8% train accuracy)
 
-### 🎯 NEXT (Phase 3):
-- Create training datasets (input features → target next cell)
-- Train simple classifier (Random Forest/Gradient Boosting)
-- Evaluate prediction accuracy
-- Visualize results
+### 🎯 CURRENT FOCUS (Phase 3):
+- ✅ Created training data (199 sequences)
+- ✅ Trained first ML model (Random Forest)
+- 🎯 Improve accuracy with more data/better models
+- 🎯 Add visualization and evaluation tools
 
-## Project Structure
+## 🚀 Quick Start
 
+### 1. Test the Working Model
+```python
+# Run our current working example
+python scripts/test_simple.py                    # Test feature extraction
+python scripts/create_simple_training_data.py   # Create training data  
+python scripts/train_simple_model.py            # Train ML model
+```
+
+### 2. Project Structure
 ```
 ais-forecasting/
 ├── data/
 │   ├── raw/                    # AIS data files (2018-2025)
-│   └── processed/              
-│       ├── vessel_features/    # ✅ 65 features per vessel
-│       ├── training_sets/      # 🎯 ML input-target pairs
-│       └── predictions/        # 🎯 Model outputs
+│   ├── processed/              
+│   │   ├── training_sets/      # ✅ ML training data
+│   │   └── vessel_features/    # ✅ 65 features per vessel
+│   └── models/                 # ✅ Trained models
 ├── src/
 │   ├── features/               # ✅ COMPLETE
 │   │   ├── vessel_h3_tracker.py   # GPS → H3 sequences
 │   │   └── vessel_features.py     # 65 feature extraction
-│   ├── models/                 # 🎯 Simple classifiers
-│   └── data/                   # Data loading utilities
-├── notebooks/
-│   └── vessel_exploration.ipynb   # ✅ Complete analysis
-└── scripts/                    # 🎯 Training/evaluation scripts
+│   └── models/                 # 🎯 Simple classifiers
+├── scripts/                    # ✅ Working examples
+└── notebooks/
+    └── vessel_exploration.ipynb   # ✅ Complete analysis
 ```
 
-## Quick Start
+## 📊 Data Summary
 
-### 1. Environment Setup
-```bash
-git clone <repository>
-cd ais-forecasting
-pip install -r requirements.txt
-```
+### AIS Data Files (data/raw/):
+- **8 files**: `ais_cape_data_2018.pkl` to `ais_cape_data_2025.pkl`
+- **Format**: Pandas DataFrames with 18 columns
+- **Sample size**: 8.3M+ records (2018), ~1.1GB per year
+- **Coverage**: Cape Town maritime area, UTC timestamps
+- **Key columns**: `imo` (vessel ID), `lat/lon` (position), `speed`, `heading`, `mdt` (timestamp)
 
-### 2. Simple Prediction Example
-```python
-# Load and process vessel data
-from src.features.vessel_h3_tracker import VesselH3Tracker
-from src.features.vessel_features import VesselFeatureExtractor
-
-# Convert vessel to H3 sequence
-tracker = VesselH3Tracker(resolution=5)
-h3_sequence = tracker.convert_vessel_to_h3_sequence(vessel_data)
-
-# Extract 65 features
-extractor = VesselFeatureExtractor()
-features = extractor.extract_features(h3_sequence)
-
-# Train simple model (coming in Phase 3)
-from sklearn.ensemble import RandomForestClassifier
-model = RandomForestClassifier()
-model.fit(X_features, y_next_cell)
-
-# Predict next cell
-predicted_cell = model.predict(current_features)
-```
-
-## Technical Approach
-
-### Input: 65 Vessel Features
+### Feature Engineering (65 features):
 - **Current State**: Position, speed, heading, time in cell
 - **Movement History**: 6h/12h/24h speed/direction patterns  
 - **Journey Context**: Distance traveled, cells visited, journey phase
 - **Operational Context**: Cargo status, port proximity, coastal distance
 
-### Output: Next H3 Cell
-- Classification problem: Which of ~1500 possible cells?
-- Success metric: Did we predict the correct cell?
+## 🤖 Machine Learning Pipeline
 
-### Model Pipeline
+### Current Working Example:
 ```
-Raw AIS Data → H3 Sequences → 65 Features → Classifier → Next Cell Prediction
+Raw AIS Data → H3 Sequences → 65 Features → Random Forest → Next Cell Prediction
 ```
 
-## Why Start Simple?
+### Model Performance:
+- **Training Accuracy**: 91.8% (shows model learns patterns)
+- **Test Accuracy**: 5.0% (162 possible cells, room for improvement)
+- **Feature Importance**: Location (lat/lon) most important, then current H3 cell
 
-This focused approach gives us:
-1. **Quick wins** - Clear success criteria
-2. **Solid foundation** - Can extend to multi-step, fleet patterns later  
-3. **Real value** - Vessel operators care about next destination
-4. **Manageable scope** - Avoid complexity until we prove basic approach
+### Success Criteria:
+- **Target**: >60% accuracy predicting next H3 cell
+- **Distance**: <15km average error from actual position
 
-## Dependencies
+## 🔧 Technical Implementation
 
-- **Core**: pandas, numpy, scikit-learn
-- **Geospatial**: h3-py (hexagonal indexing)
-- **Analysis**: jupyter, matplotlib, seaborn
-- **Full list**: See `requirements.txt`
+### Phase 2 Accomplishments:
+- **VesselH3Tracker**: Converts GPS data to H3 sequences with quality validation
+- **VesselFeatureExtractor**: Creates 65 comprehensive vessel features
+- **Tested**: Validated on vessel IMO 9883089 (364-day journey, 9,151 records, 1,530 H3 cells)
 
-## Next Steps (Phase 3)
+### Next Steps:
+1. **More training data** - Add more vessels to training set
+2. **Better features** - Use more of the 65 available features
+3. **Advanced models** - Try XGBoost, Neural Networks
+4. **Evaluation tools** - Visualize predictions on maps
+
+## 📦 Dependencies
+
+**Core**: pandas, numpy, scikit-learn, h3-py  
+**Geospatial**: geopandas, folium  
+**ML**: pytorch, optuna (for advanced models)  
+**Analysis**: jupyter, matplotlib, seaborn
+
+Install: `pip install -r requirements.txt`
+
+## 🎯 Why This Approach Works
+
+1. **Clear Success Metrics** - Easy to measure if predictions are correct
+2. **Solid Foundation** - 65 validated features from real vessel data
+3. **Simple First** - Random Forest before complex deep learning
+4. **Extensible** - Can add multi-step prediction, fleet patterns later
+5. **Real Value** - Vessel operators want to know where ships go next
+
+---
+
+**Focus**: Simple vessel next-cell prediction that actually works → then extend to more complex features.
 
 1. **Create training data** - Convert 65 features to input-target pairs
 2. **Train classifier** - Start with Random Forest
