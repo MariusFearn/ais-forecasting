@@ -1,7 +1,9 @@
-# TODO: Vessel-Level H3 Feature Engineering
+# Vessel H3 Trajectory Prediction - Simple ML Pipeline
 
-## Project Goal
-Predict individual capsize vessel movements through H3 grid cells to understand maritime traffic patterns. Focus on vessel trajectory prediction rather than Baltic rate prediction.
+## Project Goal: SIMPLE FIRST SUCCESS
+Predict which H3 cell a vessel will visit next using machine learning. Start simple, then extend.
+
+**Why this focus?** Get our first working ML model on vessel movement, then expand later.
 
 ## Phase 1: Data Foundation (Week 1) **[COMPLETE ✅]**
 
@@ -84,119 +86,48 @@ Predict individual capsize vessel movements through H3 grid cells to understand 
 
 **Phase 2 Result: Successfully extracted 65 comprehensive vessel features ready for sequence modeling!**
 
-## Phase 3: Sequence Processing Pipeline (Week 3) **[NEXT: READY TO START]**
+## Phase 3: Simple ML Training Pipeline (Week 3) **[NEXT: READY TO START]**
 
-### 3.1 Data Preprocessing **[READY TO START]**
-- [x] Create `VesselH3Tracker` class **[Done: src/features/vessel_h3_tracker.py]**
-- [x] Implement journey segmentation (port-to-port) **[Done: VesselH3Tracker]**
-- [x] Handle data quality issues: **[Done: VesselH3Tracker]**
-  - [x] GPS coordinate errors **[Done]**
-  - [x] Missing timestamps **[Done]**
-  - [x] Duplicate records **[Done]**
-  - [x] Speed/course outliers **[Done]**
+### 3.1 Create Training Data **[READY TO START]**
+- [ ] **Convert 65 features to ML datasets**
+  - [ ] Input: Current vessel state (65 features)
+  - [ ] Target: Next H3 cell vessel actually visited
+  - [ ] Create proper train/validation/test splits
+  - [ ] Script: `scripts/create_training_data.py`
 
-### 3.2 Feature Engineering Pipeline **[READY TO START]**
-- [x] Create `VesselFeatureExtractor` class **[Done: src/features/vessel_features.py]**
-- [x] Implement sliding window feature extraction **[Done: VesselFeatureExtractor]**
-- [x] Add lag features (1h, 6h, 12h, 24h) **[Done: VesselFeatureExtractor]**
-- [x] Create rolling statistics (mean, std, trend) **[Done: VesselFeatureExtractor]**
+### 3.2 Train Simple Classifier **[READY TO START]**
+- [ ] **Random Forest Classifier**
+  - [ ] 65 features → Next H3 cell prediction
+  - [ ] Basic hyperparameter tuning
+  - [ ] Save trained model
+  - [ ] Script: `scripts/train_model.py`
 
-### 3.3 Sequence Dataset Creation **[TODO: NEXT STEP]**
-- [ ] Create training sequences for ML models
-- [ ] Implement proper temporal splits (no data leakage)
-- [ ] Generate input-target pairs:
-  - Input: Last N H3 positions + features
-  - Target: Next H3 position(s)
-- [ ] Save processed sequences in efficient format
+### 3.3 Evaluate Performance **[READY TO START]**
+- [ ] **Classification Metrics**
+  - [ ] Accuracy: Did we predict the right cell?
+  - [ ] Distance error: How far off in km?
+  - [ ] Visualize predictions on map
+  - [ ] Script: `scripts/evaluate_model.py`
 
-## Phase 4: Model Development (Week 4)
+**Phase 3 Success Goal**: >60% accuracy predicting next H3 cell, <15km average distance error
 
-### 4.1 Baseline Models
-- [ ] **Simple Persistence Model**
-  - [ ] Predict next cell = current cell
-  - [ ] Predict based on current heading/speed
-  - [ ] Calculate baseline accuracy metrics
+## Phase 4: Model Improvements (Week 4) **[AFTER PHASE 3 SUCCESS]**
 
-- [ ] **Rule-Based Model**
-  - [ ] Great circle route prediction
-  - [ ] Port-destination routing
-  - [ ] Speed-based time estimation
+### 4.1 Try Different Models
+- [ ] XGBoost classifier
+- [ ] Simple neural network
+- [ ] Ensemble methods
 
-### 4.2 Machine Learning Models
-- [ ] **Sequence Models**
-  - [ ] LSTM for H3 sequence prediction
-  - [ ] Transformer model for vessel trajectories
-  - [ ] Test different sequence lengths (6h, 12h, 24h)
+### 4.2 Multi-step Prediction
+- [ ] Predict next 3-5 H3 cells
+- [ ] Sequence-to-sequence models
 
-- [ ] **Multi-step Prediction**
-  - [ ] 1-step: Next H3 cell (1-6 hours)
-  - [ ] Multi-step: Next 4 H3 cells (24 hours)
-  - [ ] Journey completion: Predict destination
+### 4.3 Advanced Features
+- [ ] Add weather data
+- [ ] Port information
+- [ ] Fleet interactions
 
-### 4.3 Model Evaluation
-- [ ] **Accuracy Metrics**
-  - [ ] Next cell prediction accuracy
-  - [ ] Distance error (km from actual position)
-  - [ ] Route similarity metrics
-  - [ ] Destination prediction accuracy
-
-- [ ] **Validation Strategy**
-  - [ ] Time-based splits (train on 2018-2022, test on 2023-2024)
-  - [ ] Vessel-based splits (train on 80% vessels, test on 20%)
-  - [ ] Route-based validation (different trade routes)
-
-## Phase 5: Analysis and Insights (Week 5)
-
-### 5.1 Model Interpretation
-- [ ] **Feature Importance Analysis**
-  - [ ] Which features best predict next position?
-  - [ ] How much does history length matter?
-  - [ ] Most predictive contextual features
-
-- [ ] **Trajectory Analysis**
-  - [ ] Common route patterns in H3 space
-  - [ ] Seasonal route variations
-  - [ ] Port approach/departure patterns
-  - [ ] Speed optimization zones
-
-### 5.2 Visualization and Validation
-- [ ] **Interactive Maps**
-  - [ ] Actual vs predicted vessel tracks
-  - [ ] H3 grid overlay with predictions
-  - [ ] Route probability heatmaps
-  - [ ] Animation of vessel movements
-
-- [ ] **Performance Analysis**
-  - [ ] Accuracy by route type
-  - [ ] Performance in different ocean regions
-  - [ ] Prediction accuracy vs forecast horizon
-  - [ ] Error patterns and failure modes
-
-## Implementation Files Structure
-
-```
-src/features/
-├── vessel_h3_tracker.py      # Core vessel tracking logic
-├── vessel_features.py        # Feature engineering for vessels
-├── sequence_processor.py     # Sequence data preparation
-└── trajectory_features.py    # Advanced trajectory features
-
-src/models/
-├── vessel_sequence_model.py  # LSTM/Transformer for vessel prediction
-├── baseline_models.py        # Simple baseline predictors
-└── ensemble_model.py         # Combined prediction models
-
-scripts/
-├── process_vessel_sequences.py  # Main feature creation script
-├── train_vessel_model.py        # Model training pipeline
-└── evaluate_vessel_model.py     # Model evaluation and analysis
-
-notebooks/
-├── vessel_exploration.ipynb     # Initial data exploration
-├── h3_resolution_analysis.ipynb # H3 resolution selection
-├── vessel_trajectory_viz.ipynb  # Visualization development
-└── model_performance_analysis.ipynb # Results analysis
-```
+**Focus**: Get Phase 3 working first - simple next-cell prediction!
 
 ## Success Criteria
 
