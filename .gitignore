@@ -106,3 +106,19 @@ optuna.db
 *.csv
 *.parquet
 *.feather
+\n# Python
+__pycache__/
+*.py[cod]
+\n# IDEs and editors
+.vscode/
+.idea/
+*.swp
+\n# Environment
+.env
+venv/
+env/
+\n# Notebooks
+.ipynb_checkpoints/
+\n# OS-specific
+.DS_Store
+Thumbs.db

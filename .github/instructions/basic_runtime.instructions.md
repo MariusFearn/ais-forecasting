@@ -1,34 +1,79 @@
 # AIS Vessel Trajectory Prediction - Quick Reference
 
-## 🎯 Project Goal
-Predict which H3 cell a vessel will visit next using machine learning.
 
-## ✅ Current Working Status
-- ✅ Phase 1-2 Complete: 65 vessel features extracted
-- ✅ Working ML model: Random Forest classifier
-- 🎯 Current accuracy: 5% (target: >60%)
 
-## 🚀 Quick Commands
 
-```bash
-# Test feature extraction (100 records)
-python scripts/test_simple.py
-
-# Create training data (199 sequences) 
-python scripts/create_simple_training_data.py
-
-# Train Random Forest model
-python scripts/train_simple_model.py
 ```
 
-## 📁 Key Files
-- `data/raw/` - AIS data (2018-2025)
-- `src/features/vessel_h3_tracker.py` - GPS → H3 conversion
-- `src/features/vessel_features.py` - 65 feature extraction
-- `data/processed/training_sets/` - ML training data
-- `data/models/final_models/` - Trained models
+## 📁 Project sturckture - we do not change this strukture - keep attention if you create new files to put them in the right place
+ais-forecasting/
+├── .github/                    # Contains GitHub-specific files, like CI/CD workflows.
+│
+├── config/                     # Stores all project configuration files.
+│   ├── default.yaml            # Default parameters for the entire project.
+│   └── experiment_configs/     # Configurations for specific machine learning experiments.
+│       ├── nbeats_experiment.yaml # Settings for an N-BEATS model experiment.
+│       └── tft_experiment.yaml    # Settings for a Temporal Fusion Transformer experiment.
+│
+├── data/                       # Holds all data used in the project.
+│   ├── raw/                    # Raw, immutable data. Should not be modified.
+│   ├── processed/              # Cleaned, transformed, and feature-engineered data.
+│   │   ├── training_sets/      # Final datasets ready for model training.
+│   │   ├── vessel_features/    # Intermediate features extracted for each vessel.
+│   │   └── predictions/        # Stores the output predictions from models.
+│   └── models/                 # Contains all trained model artifacts.
+│       ├── final_models/       # Serialized, production-ready models.
+│       ├── checkpoints/        # Saved states during large model training.
+│       └── hyperparameter_logs/# Logs from hyperparameter optimization runs.
+│
+├── experiments/                # Tracks results and artifacts from ML experiments.
+│   ├── baseline_experiments/   # Results from simple baseline models.
+│   ├── nbeats_experiments/     # Results from N-BEATS model experiments.
+│   └── tft_experiments/        # Results from TFT model experiments.
+│
+├── notebooks/                  # Jupyter notebooks for interactive analysis and visualization.
+│   ├── exploratory.ipynb       # Initial data exploration and analysis.
+│   ├── preprocessing.ipynb     # Interactive data cleaning and preparation.
+│   ├── model_development.ipynb # Prototyping and developing new models.
+│   ├── evaluation.ipynb        # In-depth evaluation of model performance.
+│   └── visual_training_analysis.ipynb # Visualizing the full training pipeline.
+│
+├── scripts/                    # Contains standalone, executable scripts for core tasks. (should not containe functions, use src for functions)
+│   ├── create_simple_training_data.py # Generates a small, single-vessel dataset.
+│   ├── train_simple_model.py   # Trains a baseline model on the simple dataset.
+│   ├── create_multi_vessel_training_data.py # Generates the full training dataset.
+│   ├── train_enhanced_model.py # Trains the primary, enhanced model.
+│   ├── evaluate.py             # Runs model evaluation from the command line.
+│   ├── predict.py              # Runs predictions using a trained model.
+│   ├── test_simple.py          # A simple test script for quick validation.
+│   ├── create_training_data.py # Delete: Redundant, functionality is split.
+│   ├── train.py                # Delete: Redundant, functionality is split.
+│   └── quick_start_h3.py       # Delete: Old script, functionality now in notebooks.
+│
+├── src/                        # Contains all the project's source code as a Python package.
+│   ├── __init__.py             # Makes 'src' a package, allowing imports.
+│   ├── data/                   # Modules for data loading and preprocessing.
+│   ├── features/               # Modules for feature engineering and transformation.
+│   ├── models/                 # Python definitions of model architectures.
+│   ├── utils/                  # Reusable utility functions and helper classes.
+│   └── visualization/          # Code for generating plots and maps.
+│
+├── tests/                      # Contains all tests for the project source code.
+│   ├── test_data.py            # Unit tests for data loading and validation.
+│   ├── test_features.py        # Unit tests for the feature engineering pipeline.
+│   └── test_models.py          # Unit tests for model input/output validation.
+│
+├── visualizations/             # Stores saved output plots, maps, and other visuals.
+│   ├── *.html                  # Interactive maps and plots generated by notebooks/scripts.
+│   └── ultra_fast_maritime_visualization.py # Move: This is a script, not a visualization.
+│
+├── README.md                   # This file: The main documentation for the project.
+├── requirements.txt            # A list of all Python packages required to run the project. Update this if we need new models and make sure we are in ML environment if we install something.
+└── .gitignore                  # Specifies files and folders to be ignored by Git.
 
 ## 🎯 Next Steps
 1. Scale up training data (more vessels)
 2. Try XGBoost model
 3. Add visualization tools
+
+In terminal we use conda ML - not base - conda activate ML must be run before running any scripts or notebooks.
