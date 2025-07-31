@@ -1,0 +1,38 @@
+evaluation:
+  name: "comprehensive_model_evaluation"
+  type: "comprehensive"
+  description: "Detailed model evaluation with visualizations and analysis"
+
+model:
+  auto_detect_paths: true
+  model_types: ["h3_predictor"]
+
+data:
+  training_data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
+  use_test_split: true
+  test_size: 0.2
+
+metrics:
+  - accuracy
+  - distance_based_metrics
+  - top_k_accuracy: [1, 3, 5]
+  - confusion_matrix
+  - feature_importance
+  - performance_by_vessel
+
+analysis:
+  distance_analysis:
+    enable: true
+    sample_size: 1000
+    target_distances: [5, 10, 15, 20]  # km
+  
+  visualization:
+    create_plots: true
+    save_to_file: true
+    plot_types: ["confusion_matrix", "feature_importance", "distance_distribution"]
+
+output:
+  detailed_report: true
+  save_predictions: false
+  export_metrics: true
+  create_visualizations: true

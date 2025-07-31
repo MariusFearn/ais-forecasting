@@ -1,0 +1,21 @@
+test:
+  name: "infrastructure_validation"
+  type: "infrastructure"
+  description: "Test data preprocessing and pipeline infrastructure components"
+
+components:
+  - data_preprocessor:
+      test_datetime_fixes: true
+      test_categorical_fixes: true
+      test_memory_optimization: true
+      test_feature_processing: true
+  
+  - chunked_loader:
+      test_memory_management: true
+      test_balanced_sampling: true
+      chunk_sizes: [1000, 5000]
+
+output:
+  save_results: true
+  create_report: true
+  verbose: true

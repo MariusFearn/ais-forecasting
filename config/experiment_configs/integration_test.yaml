@@ -1,0 +1,28 @@
+test:
+  name: "integration_pipeline_test"
+  type: "integration"
+  description: "Test complete end-to-end pipeline integration"
+
+pipeline:
+  test_data_loading: true
+  test_feature_extraction: true
+  test_model_training: true
+  test_model_evaluation: true
+
+data_source:
+  test_data_path: "data/raw/ais_cape_data_2024.pkl"
+  vessel_limit: 2
+  records_per_vessel: 50
+
+training:
+  quick_training: true
+  model_type: "random_forest"
+  n_estimators: 10
+
+evaluation:
+  basic_metrics: true
+  distance_analysis: false
+
+output:
+  save_intermediate_results: true
+  create_pipeline_report: true

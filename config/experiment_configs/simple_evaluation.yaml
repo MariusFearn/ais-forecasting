@@ -1,0 +1,21 @@
+evaluation:
+  name: "simple_model_evaluation"
+  type: "simple"
+  description: "Basic model evaluation with core metrics"
+
+model:
+  auto_detect_paths: true
+  model_types: ["h3_predictor"]
+
+data:
+  training_data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
+  use_test_split: true
+  test_size: 0.2
+
+metrics:
+  - accuracy
+  - n_test_samples
+
+output:
+  save_results: true
+  detailed_report: false

@@ -1,0 +1,19 @@
+test:
+  name: "model_performance_validation"
+  type: "model_performance"
+  description: "Test trained model performance against benchmarks"
+
+model:
+  model_path: "data/models/final_models/comprehensive_h3_predictor.pkl"
+  encoder_path: "data/models/final_models/comprehensive_h3_encoder.pkl"
+  metadata_path: "data/models/final_models/comprehensive_model_metadata.pkl"
+
+performance_checks:
+  min_accuracy: 0.80  # 80% minimum accuracy
+  max_distance_error: 10.0  # 10km maximum average error
+  min_success_rate_15km: 0.80  # 80% predictions within 15km
+
+output:
+  show_performance_comparison: true
+  display_feature_importance: true
+  create_summary_report: true

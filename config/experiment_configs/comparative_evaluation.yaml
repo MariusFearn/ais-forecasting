@@ -1,0 +1,35 @@
+evaluation:
+  name: "comparative_model_evaluation"
+  type: "comparative"
+  description: "Compare multiple models and approaches"
+
+models:
+  - name: "comprehensive_h3_predictor"
+    path: "data/models/final_models/comprehensive_h3_predictor.pkl"
+    encoder_path: "data/models/final_models/comprehensive_h3_encoder.pkl"
+    metadata_path: "data/models/final_models/comprehensive_model_metadata.pkl"
+  
+  # Future models would be added here
+  # - name: "simple_h3_predictor"
+  #   path: "data/models/final_models/simple_h3_predictor.pkl"
+
+data:
+  training_data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
+  use_test_split: true
+  test_size: 0.2
+
+comparison_metrics:
+  - accuracy
+  - distance_based_metrics
+  - training_time
+  - prediction_speed
+  - model_size
+
+analysis:
+  statistical_significance: true
+  cross_validation: false
+  
+output:
+  comparison_table: true
+  recommendation: true
+  save_results: true

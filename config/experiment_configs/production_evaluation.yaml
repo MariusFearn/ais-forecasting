@@ -1,0 +1,35 @@
+evaluation:
+  name: "production_model_evaluation"
+  type: "production"
+  description: "Production-ready evaluation with deployment metrics"
+
+model:
+  auto_detect_paths: true
+  model_types: ["h3_predictor"]
+
+data:
+  training_data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
+  use_test_split: true
+  test_size: 0.2
+
+production_thresholds:
+  min_accuracy: 0.80  # 80% minimum for production
+  max_avg_distance: 10.0  # 10km maximum average error
+  min_success_rate_15km: 0.75  # 75% within 15km
+
+metrics:
+  - accuracy
+  - distance_based_metrics
+  - production_readiness
+  - performance_stability
+
+analysis:
+  distance_analysis:
+    enable: true
+    sample_size: 2000
+    target_distances: [5, 10, 15, 20]
+
+output:
+  production_report: true
+  deployment_recommendations: true
+  save_results: true
