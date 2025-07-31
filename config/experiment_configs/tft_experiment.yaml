@@ -2,7 +2,7 @@
 # Extends default.yaml with TFT-specific parameters
 
 defaults:
-  - ../default
+  - ../dl_default
 
 model:
   name: "tft"

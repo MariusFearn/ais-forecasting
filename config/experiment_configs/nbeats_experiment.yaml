@@ -2,7 +2,7 @@
 # Extends default.yaml with N-BEATS-specific parameters
 
 defaults:
-  - ../default
+  - ../dl_default
 
 model:
   name: "nbeats"

@@ -1,0 +1,25 @@
+# Base configuration for all H3 prediction experiments
+defaults:
+  - ../default
+
+data:
+  target: "target_h3_cell"
+  exclude_columns: ["target_h3_cell", "vessel_imo", "data_year"]
+  random_state: 42
+
+training:
+  apply_phase5_fixes: true
+  handle_single_sample_classes: true
+
+feature_selection:
+  method: "mutual_info_classif"
+  
+output:
+  model_path_template: "{models}/{experiment_name}_predictor.pkl"
+  encoder_path_template: "{models}/{experiment_name}_encoder.pkl"
+  metadata_path_template: "{models}/{experiment_name}_metadata.pkl"
+
+evaluation:
+  include_feature_importance: true
+  include_distance_evaluation: true
+  sample_prediction_test: true

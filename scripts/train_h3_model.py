@@ -46,35 +46,70 @@ except ImportError:
     PHASE5_FIXES_AVAILABLE = False
 
 def load_config(config_name):
-    """Load experiment configuration from YAML file."""
+    """Load experiment configuration from YAML file with proper defaults inheritance."""
     config_path = Path(f"config/experiment_configs/{config_name}.yaml")
     
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
     
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f)
-    
-    # Load default config if specified
-    if 'defaults' in config:
-        default_path = Path("config/default.yaml")
-        if default_path.exists():
-            with open(default_path, 'r') as f:
-                default_config = yaml.safe_load(f)
+    def load_config_recursive(config_path, visited=None):
+        """Recursively load configurations with defaults."""
+        if visited is None:
+            visited = set()
+        
+        # Prevent infinite loops
+        if str(config_path) in visited:
+            return {}
+        visited.add(str(config_path))
+        
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+        
+        if 'defaults' not in config:
+            return config
+        
+        # Start with empty result
+        result = {}
+        
+        # Load each default file
+        for default_file in config['defaults']:
+            if default_file.startswith('../'):
+                # Load from parent directory (config/)
+                default_path = config_path.parent.parent / f"{default_file[3:]}.yaml"
+            else:
+                # Load from same directory (experiment_configs/)
+                default_path = config_path.parent / f"{default_file}.yaml"
             
-            # Merge configs (experiment config overrides defaults)
-            def merge_configs(default, override):
-                result = default.copy()
-                for key, value in override.items():
-                    if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-                        result[key] = merge_configs(result[key], value)
-                    else:
-                        result[key] = value
-                return result
-            
-            config = merge_configs(default_config, config)
+            if default_path.exists():
+                default_config = load_config_recursive(default_path, visited.copy())
+                result = merge_configs(result, default_config)
+        
+        # Merge current config (without defaults key)
+        current_config = {k: v for k, v in config.items() if k != 'defaults'}
+        result = merge_configs(result, current_config)
+        
+        return result
     
-    return config
+    def merge_configs(base, override):
+        """Deep merge two configurations."""
+        if base is None:
+            return override
+        if override is None:
+            return base
+        
+        if not isinstance(base, dict) or not isinstance(override, dict):
+            return override
+        
+        result = base.copy()
+        for key, value in override.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = merge_configs(result[key], value)
+            else:
+                result[key] = value
+        
+        return result
+    
+    return load_config_recursive(config_path)
 
 def prepare_features(df, config):
     """Prepare features according to configuration."""
@@ -226,20 +261,47 @@ def evaluate_model(model, X_test, y_test, h3_encoder, config):
     return results
 
 def save_model_and_metadata(model, h3_encoder, selected_features, results, config):
-    """Save model, encoder, and metadata."""
+    """Save model, encoder, and metadata using path templates."""
     print("\n💾 Saving model and metadata...")
     
+    # Get paths configuration
+    paths = config.get('paths', {})
+    models_dir = paths.get('models', 'data/models/final_models')
+    
+    # Get experiment name for path templates
+    experiment_name = config['experiment']['name']
+    
+    # Construct paths from templates
+    if 'output' in config and 'model_path_template' in config['output']:
+        model_path = config['output']['model_path_template'].format(
+            models=models_dir, 
+            experiment_name=experiment_name
+        )
+        encoder_path = config['output']['encoder_path_template'].format(
+            models=models_dir, 
+            experiment_name=experiment_name
+        )
+        metadata_path = config['output']['metadata_path_template'].format(
+            models=models_dir, 
+            experiment_name=experiment_name
+        )
+    else:
+        # Fallback to legacy paths if templates not available
+        model_path = config['output']['model_path']
+        encoder_path = config['output']['encoder_path']
+        metadata_path = config['output']['metadata_path']
+    
     # Create output directory
-    model_dir = Path(config['output']['model_path']).parent
+    model_dir = Path(model_path).parent
     model_dir.mkdir(parents=True, exist_ok=True)
     
     # Save model and encoder
-    joblib.dump(model, config['output']['model_path'])
-    joblib.dump(h3_encoder, config['output']['encoder_path'])
+    joblib.dump(model, model_path)
+    joblib.dump(h3_encoder, encoder_path)
     
     # Save metadata
     metadata = {
-        'experiment_name': config['experiment']['name'],
+        'experiment_name': experiment_name,
         'experiment_phase': config['experiment']['phase'],
         'description': config['experiment']['description'],
         'model_type': config['model']['type'],
@@ -250,11 +312,11 @@ def save_model_and_metadata(model, h3_encoder, selected_features, results, confi
         'config': config
     }
     
-    joblib.dump(metadata, config['output']['metadata_path'])
+    joblib.dump(metadata, metadata_path)
     
-    print(f"   ✅ Model saved to: {config['output']['model_path']}")
-    print(f"   ✅ Encoder saved to: {config['output']['encoder_path']}")  
-    print(f"   ✅ Metadata saved to: {config['output']['metadata_path']}")
+    print(f"   ✅ Model saved to: {model_path}")
+    print(f"   ✅ Encoder saved to: {encoder_path}")  
+    print(f"   ✅ Metadata saved to: {metadata_path}")
 
 def train_h3_predictor(config_name):
     """Main training function."""

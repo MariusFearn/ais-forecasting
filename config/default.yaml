@@ -1,38 +1,6 @@
-# Model configuration
-model:
-  max_encoder_length: 30
-  max_prediction_length: 7
-  batch_size: 64
-  learning_rate: 0.01
-  
-# Training configuration
-training:
-  max_epochs: 50
-  patience: 10
-  gradient_clip_val: 0.1
-  
-# Data configuration
-data:
-  validation_days: 30
-  h3_resolution: 8
-  target_column: "value"
-  time_idx_column: "time_idx"
-  group_id_columns: ["GroupIDS"]
-  
-# Feature engineering
-features:
-  time_varying_known_reals: ["month", "day_of_week"]
-  time_varying_unknown_reals: ["value"]
-  static_categoricals: []
-  static_reals: []
-  
-# Hyperparameter optimization
-optimization:
-  n_trials: 50
-  study_name: "ais_forecasting_optimization"
-  direction: "minimize"
-  
-# Logging
-logging:
-  log_dir: "./tensorboard_logs"
-  experiment_name: "ais_forecasting"
+paths:
+  models: "data/models/final_models"
+  processed_data: "data/processed/training_sets"
+  raw_data: "data/raw"
+  experiments: "experiments"
+  evaluation_results: "experiments/evaluation_results"

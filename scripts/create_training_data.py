@@ -33,35 +33,70 @@ from features.vessel_h3_tracker import VesselH3Tracker
 from features.vessel_features import VesselFeatureExtractor
 
 def load_config(config_name):
-    """Load data creation configuration from YAML file."""
+    """Load data creation configuration from YAML file with proper defaults inheritance."""
     config_path = Path(f"config/experiment_configs/{config_name}.yaml")
     
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
     
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f)
-    
-    # Load default config if specified
-    if 'defaults' in config:
-        default_path = Path("config/default.yaml")
-        if default_path.exists():
-            with open(default_path, 'r') as f:
-                default_config = yaml.safe_load(f)
+    def load_config_recursive(config_path, visited=None):
+        """Recursively load configurations with defaults."""
+        if visited is None:
+            visited = set()
+        
+        # Prevent infinite loops
+        if str(config_path) in visited:
+            return {}
+        visited.add(str(config_path))
+        
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+        
+        if 'defaults' not in config:
+            return config
+        
+        # Start with empty result
+        result = {}
+        
+        # Load each default file
+        for default_file in config['defaults']:
+            if default_file.startswith('../'):
+                # Load from parent directory (config/)
+                default_path = config_path.parent.parent / f"{default_file[3:]}.yaml"
+            else:
+                # Load from same directory (experiment_configs/)
+                default_path = config_path.parent / f"{default_file}.yaml"
             
-            # Merge configs
-            def merge_configs(default, override):
-                result = default.copy()
-                for key, value in override.items():
-                    if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-                        result[key] = merge_configs(result[key], value)
-                    else:
-                        result[key] = value
-                return result
-            
-            config = merge_configs(default_config, config)
+            if default_path.exists():
+                default_config = load_config_recursive(default_path, visited.copy())
+                result = merge_configs(result, default_config)
+        
+        # Merge current config (without defaults key)
+        current_config = {k: v for k, v in config.items() if k != 'defaults'}
+        result = merge_configs(result, current_config)
+        
+        return result
     
-    return config
+    def merge_configs(base, override):
+        """Deep merge two configurations."""
+        if base is None:
+            return override
+        if override is None:
+            return base
+        
+        if not isinstance(base, dict) or not isinstance(override, dict):
+            return override
+        
+        result = base.copy()
+        for key, value in override.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = merge_configs(result[key], value)
+            else:
+                result[key] = value
+        
+        return result
+    
+    return load_config_recursive(config_path)
 
 def load_and_combine_data(config):
     """Load and combine data files according to configuration."""

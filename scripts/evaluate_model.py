@@ -59,12 +59,15 @@ class UnifiedModelEvaluator:
     
     def _load_model_components(self, model_config: Dict[str, Any]) -> tuple:
         """Load model, encoder, and metadata."""
+        # Get paths configuration
+        paths = self.config.get('paths', {})
+        models_dir = Path(paths.get('models', 'data/models/final_models'))
+        
         if model_config.get('auto_detect_paths', False):
             # Auto-detect latest model paths
-            model_dir = Path("data/models/final_models")
-            model_path = model_dir / "comprehensive_h3_predictor.pkl"
-            encoder_path = model_dir / "comprehensive_h3_encoder.pkl"
-            metadata_path = model_dir / "comprehensive_model_metadata.pkl"
+            model_path = models_dir / "comprehensive_h3_predictor.pkl"
+            encoder_path = models_dir / "comprehensive_h3_encoder.pkl"
+            metadata_path = models_dir / "comprehensive_model_metadata.pkl"
         else:
             # Use specified paths
             model_path = Path(model_config['model_path'])
@@ -324,10 +327,14 @@ class UnifiedModelEvaluator:
     
     def _apply_feature_selection(self, X: pd.DataFrame, model_name: str = "comprehensive") -> pd.DataFrame:
         """Apply feature selection if selector exists."""
+        # Get paths configuration
+        paths = self.config.get('paths', {})
+        models_dir = Path(paths.get('models', 'data/models/final_models'))
+        
         if model_name == "comprehensive":
-            selector_path = Path("data/models/final_models/feature_selector.pkl")
+            selector_path = models_dir / "feature_selector.pkl"
         else:
-            selector_path = Path("data/models/final_models/comprehensive_h3_selector.pkl")
+            selector_path = models_dir / "comprehensive_h3_selector.pkl"
         
         if selector_path.exists():
             try:
@@ -466,9 +473,61 @@ class UnifiedModelEvaluator:
 
 
 def load_config(config_path: str) -> dict:
-    """Load configuration from YAML file."""
+    """Load configuration from YAML file with proper defaults inheritance."""
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
+    
+    # Handle hierarchical config loading
+    def load_with_defaults(config_dict, config_dir):
+        """Recursively load configuration with defaults."""
+        if 'defaults' not in config_dict:
+            return config_dict
+        
+        # Load each default file
+        merged_config = {}
+        for default_file in config_dict['defaults']:
+            if default_file.startswith('../'):
+                # Load from parent directory (config/)
+                default_path = config_dir.parent / f"{default_file[3:]}.yaml"
+            else:
+                # Load from same directory (experiment_configs/)
+                default_path = config_dir / f"{default_file}.yaml"
+            
+            if default_path.exists():
+                with open(default_path, 'r') as f:
+                    default_config = yaml.safe_load(f)
+                # Recursively handle defaults in the loaded file
+                default_config = load_with_defaults(default_config, config_dir)
+                merged_config = merge_configs(merged_config, default_config)
+        
+        # Remove 'defaults' key and merge with current config
+        current_config = {k: v for k, v in config_dict.items() if k != 'defaults'}
+        merged_config = merge_configs(merged_config, current_config)
+        
+        return merged_config
+    
+    # Merge configs (experiment config overrides defaults)
+    def merge_configs(default, override):
+        if default is None:
+            return override
+        if override is None:
+            return default
+        
+        result = default.copy() if isinstance(default, dict) else default
+        
+        if isinstance(override, dict) and isinstance(result, dict):
+            for key, value in override.items():
+                if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                    result[key] = merge_configs(result[key], value)
+                else:
+                    result[key] = value
+        else:
+            result = override
+            
+        return result
+    
+    config_dir = Path(config_path).parent
+    config = load_with_defaults(config, config_dir)
     return config
 
 

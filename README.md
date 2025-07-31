@@ -21,6 +21,7 @@ A professional machine learning system for predicting vessel movements using AIS
 ### 🎯 **KEY ACHIEVEMENTS:**
 - ✅ **17x Accuracy Improvement**: 5% → 85.5% using optimal features
 - ✅ **Unified Pipeline**: Single scripts handle all experiment types
+- ✅ **Hierarchical Configuration**: Inherited YAML configs with 55-63% duplication reduction
 - ✅ **Configuration-Driven**: All parameters in version-controlled YAML
 - ✅ **Professional Structure**: Following ML engineering best practices
 - ✅ **Zero Code Duplication**: 67% code reduction through unification
@@ -116,16 +117,25 @@ scripts/
 └── (legacy scripts for cleanup)   # 📁 Old scripts to be removed
 ```
 
-### **Configuration-Driven Experiments**
+### **Hierarchical Configuration System**
 ```
-config/experiment_configs/
-├── *_data_creation.yaml           # 📊 Data experiment configs
-├── *_h3_experiment.yaml           # 🤖 Training experiment configs
-├── *_test.yaml                    # 🧪 Testing configuration files
-├── *_evaluation.yaml              # 📊 Evaluation configuration files
-├── nbeats_experiment.yaml         # 🧠 Advanced model configs
-└── tft_experiment.yaml            # 🔮 Time series configs
+config/
+├── default.yaml                   # 🎯 CENTRAL path definitions for entire project
+├── dl_default.yaml               # 🧠 PyTorch/deep learning specific parameters
+└── experiment_configs/
+    ├── base_h3_experiment.yaml    # 🏗️ BASE config for all H3 experiments
+    ├── *_data_creation.yaml       # 📊 Data experiment configs (inherit from base)
+    ├── *_h3_experiment.yaml       # 🤖 Training configs (inherit from base)
+    ├── *_test.yaml                # 🧪 Testing configuration files
+    ├── *_evaluation.yaml          # 📊 Evaluation configuration files
+    ├── nbeats_experiment.yaml     # 🧠 Advanced model configs (inherit from dl_default)
+    └── tft_experiment.yaml        # 🔮 Time series configs (inherit from dl_default)
 ```
+
+**Configuration Inheritance Chain:**
+- **H3 Experiments**: `specific_experiment.yaml` → `base_h3_experiment.yaml` → `default.yaml`
+- **Deep Learning**: `nbeats/tft_experiment.yaml` → `dl_default.yaml`
+- **Benefits**: 55-63% reduction in config duplication, centralized path management
 
 ### **Core Source Code**
 ```
@@ -197,6 +207,8 @@ python scripts/evaluate_model.py --config production_evaluation
 
 ### **For Developers:**
 - ✅ **Zero Code Duplication**: Single codebase for all scenarios
+- ✅ **Hierarchical Configuration**: 55-63% reduction in config duplication
+- ✅ **Centralized Path Management**: Single point of change for all paths
 - ✅ **Easy Maintenance**: One place to fix bugs
 - ✅ **Configuration-Driven**: No hardcoded parameters
 - ✅ **Version Control**: All experiment settings tracked
@@ -206,26 +218,33 @@ python scripts/evaluate_model.py --config production_evaluation
 - ✅ **Easy A/B Testing**: New experiment = new YAML file
 - ✅ **Systematic Exploration**: Organized parameter space
 - ✅ **Professional Standards**: Industry ML practices
+- ✅ **Inheritance System**: Base configs reduce setup time
 
 ### **For Production:**
 - ✅ **Standardized Pipeline**: Consistent processing
 - ✅ **Scalable Architecture**: Handles any data volume
 - ✅ **Quality Assurance**: Built-in validation
 - ✅ **Deployment Ready**: Clean, maintainable code
+- ✅ **Environment Agnostic**: Path templates for any deployment
 
 ## 🔧 **Advanced Usage**
 
 ### **Custom Experiments**
 ```bash
-# 1. Copy existing config
-cp config/experiment_configs/comprehensive_data_creation.yaml \
-   config/experiment_configs/my_experiment_data.yaml
+# 1. Copy existing config (inherits from base automatically)
+cp config/experiment_configs/comprehensive_h3_experiment.yaml \
+   config/experiment_configs/my_custom_experiment.yaml
 
-# 2. Modify parameters in YAML file
+# 2. Modify only the differences in YAML file (inherits common settings)
 # 3. Run your custom experiment
-python scripts/create_training_data.py --config my_experiment_data
-python scripts/train_h3_model.py --config my_experiment_training
+python scripts/train_h3_model.py --config my_custom_experiment
 ```
+
+**Configuration Inheritance Benefits:**
+- **Automatic inheritance**: Your config gets common settings from `base_h3_experiment.yaml`
+- **Minimal setup**: Only specify what's different from the base
+- **Consistent paths**: Inherits centralized path definitions automatically
+- **Easy maintenance**: Changes to base config affect all experiments
 
 ### **Evaluation & Testing**
 ```bash
@@ -263,6 +282,7 @@ pip install -r requirements.txt
 
 ## 📚 **Documentation**
 
+- **`refactor_implementation_summary.md`** - ✅ **NEW**: Hierarchical config system (55-63% duplication reduction)
 - **`UNIFIED_TEST_EVAL_SUMMARY.md`** - Testing & evaluation system overview
 - **`REFACTORING_SUMMARY.md`** - System unification details
 - **`DATA_CREATION_UNIFICATION.md`** - Data pipeline overview
@@ -287,7 +307,8 @@ pip install -r requirements.txt
 
 This project demonstrates **professional ML engineering practices**:
 
-- **Configuration-Driven Development**: All experiments defined in YAML
+- **Hierarchical Configuration System**: 55-63% reduction in config duplication through inheritance
+- **Configuration-Driven Development**: All experiments defined in YAML with centralized paths
 - **Zero Code Duplication**: Unified scripts handle all scenarios  
 - **Industry Standards**: Following best practices for ML pipelines
 - **Scalable Architecture**: Handles research to production scale
@@ -302,15 +323,17 @@ This project demonstrates **professional ML engineering practices**:
 ais-forecasting/
 ├── .github/                    # GitHub workflows & CI/CD
 │
-├── config/                     # 🎯 CENTRALIZED CONFIGURATION
-│   ├── default.yaml            # Default parameters for entire project
-│   └── experiment_configs/     # 🔬 Experiment configurations
+├── config/                     # 🎯 HIERARCHICAL CONFIGURATION SYSTEM
+│   ├── default.yaml            # 🏗️ Central path definitions for entire project
+│   ├── dl_default.yaml         # 🧠 PyTorch/deep learning specific parameters
+│   └── experiment_configs/     # 🔬 Experiment configurations with inheritance
+│       ├── base_h3_experiment.yaml        # 🏗️ BASE config for all H3 experiments
 │       ├── simple_data_creation.yaml      # Phase 1 data config
 │       ├── comprehensive_data_creation.yaml # Phase 4 data config
 │       ├── massive_data_creation.yaml     # Phase 5 data config
-│       ├── simple_h3_experiment.yaml      # Phase 1 training config
-│       ├── comprehensive_h3_experiment.yaml # Phase 4 training config
-│       ├── massive_h3_experiment.yaml     # Phase 5 training config
+│       ├── simple_h3_experiment.yaml      # Phase 1 training (inherits from base)
+│       ├── comprehensive_h3_experiment.yaml # Phase 4 training (inherits from base)
+│       ├── massive_h3_experiment.yaml     # Phase 5 training (inherits from base)
 │       ├── infrastructure_test.yaml       # Testing: Core components
 │       ├── feature_extraction_test.yaml   # Testing: Feature pipeline
 │       ├── model_performance_test.yaml    # Testing: Model validation
@@ -319,8 +342,8 @@ ais-forecasting/
 │       ├── comprehensive_evaluation.yaml  # Evaluation: Full analysis
 │       ├── production_evaluation.yaml     # Evaluation: Production readiness
 │       ├── comparative_evaluation.yaml    # Evaluation: Multi-model comparison
-│       ├── nbeats_experiment.yaml         # N-BEATS model config
-│       └── tft_experiment.yaml            # TFT model config
+│       ├── nbeats_experiment.yaml         # N-BEATS model (inherits from dl_default)
+│       └── tft_experiment.yaml            # TFT model (inherits from dl_default)
 │
 ├── data/                       # 📊 DATA STORAGE
 │   ├── raw/                    # Raw, immutable AIS data

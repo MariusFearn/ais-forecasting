@@ -2,7 +2,7 @@
 # Phase 1: Basic RandomForest with 6 features
 
 defaults:
-  - ../default
+  - base_h3_experiment
 
 experiment:
   name: "simple_h3_prediction"
@@ -19,9 +19,7 @@ data:
     - "lon"
     - "time_in_current_cell"
     - "current_h3_encoded"  # Will be encoded automatically
-  target: "target_h3_cell"
   test_size: 0.2
-  random_state: 42
 
 # Model configuration
 model:
@@ -36,14 +34,6 @@ training:
   use_feature_selection: false
   apply_phase5_fixes: false  # Simple data doesn't need fixes
   
-# Output configuration
-output:
-  model_path: "data/models/final_models/simple_h3_predictor.pkl"
-  encoder_path: "data/models/final_models/h3_label_encoder.pkl"
-  metadata_path: "data/models/final_models/simple_model_metadata.pkl"
-
 # Evaluation configuration
 evaluation:
-  include_feature_importance: true
   include_distance_evaluation: false  # Simple evaluation
-  sample_prediction_test: true

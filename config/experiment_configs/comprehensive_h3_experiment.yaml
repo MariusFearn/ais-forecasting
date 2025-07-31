@@ -2,7 +2,7 @@
 # Phase 4: XGBoost with 42 high-quality features and feature selection
 
 defaults:
-  - ../default
+  - base_h3_experiment
 
 experiment:
   name: "comprehensive_h3_prediction"
@@ -12,13 +12,7 @@ experiment:
 # Data configuration
 data:
   training_data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
-  target: "target_h3_cell"
-  exclude_columns:
-    - "target_h3_cell"
-    - "vessel_imo" 
-    - "data_year"
   test_size: 0.2
-  random_state: 42
 
 # Model configuration
 model:
@@ -34,22 +28,7 @@ model:
 training:
   use_feature_selection: true
   top_k_features: 25
-  apply_phase5_fixes: true  # Apply datetime/categorical fixes
-  handle_single_sample_classes: true
-
-# Feature selection configuration
-feature_selection:
-  method: "mutual_info_classif"  # or "f_classif"
   
-# Output configuration
-output:
-  model_path: "data/models/final_models/comprehensive_h3_predictor.pkl"
-  encoder_path: "data/models/final_models/comprehensive_h3_encoder.pkl"
-  metadata_path: "data/models/final_models/comprehensive_model_metadata.pkl"
-
 # Evaluation configuration
 evaluation:
-  include_feature_importance: true
-  include_distance_evaluation: true
   distance_sample_size: 500
-  sample_prediction_test: true
