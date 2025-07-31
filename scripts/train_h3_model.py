@@ -29,14 +29,8 @@ warnings.filterwarnings('ignore')
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-# ML imports with graceful fallback
-try:
-    import xgboost as xgb
-    XGBOOST_AVAILABLE = True
-except ImportError:
-    print("⚠️  XGBoost not available, will use RandomForest")
-    XGBOOST_AVAILABLE = False
-
+# ML imports
+import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
@@ -166,15 +160,11 @@ def create_model(config):
     model_type = config['model']['type']
     params = config['model']['parameters']
     
-    if model_type == 'xgboost' and XGBOOST_AVAILABLE:
+    if model_type == 'xgboost':
         print(f"   🚀 Creating XGBoost Classifier...")
         return xgb.XGBClassifier(**params)
     else:
-        if model_type == 'xgboost':
-            print(f"   ⚠️  XGBoost not available, using RandomForest fallback")
-            params = config['model'].get('fallback_parameters', params)
-        else:
-            print(f"   🌲 Creating RandomForest Classifier...")
+        print(f"   🌲 Creating RandomForest Classifier...")
         return RandomForestClassifier(**params)
 
 def evaluate_model(model, X_test, y_test, h3_encoder, config):

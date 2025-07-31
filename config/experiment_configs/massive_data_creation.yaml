@@ -1,0 +1,68 @@
+# Massive Data Creation Configuration  
+# Phase 5: All years, all vessels, maximum scale
+
+defaults:
+  - ../default
+
+experiment:
+  name: "massive_data_creation"
+  description: "Phase 5: Massive scale with all available data"
+  phase: 5
+
+# Data source configuration
+data_source:
+  data_files:
+    - "data/raw/ais_cape_data_2018.pkl"
+    - "data/raw/ais_cape_data_2019.pkl"
+    - "data/raw/ais_cape_data_2020.pkl"
+    - "data/raw/ais_cape_data_2021.pkl"
+    - "data/raw/ais_cape_data_2022.pkl"
+    - "data/raw/ais_cape_data_2023.pkl"
+    - "data/raw/ais_cape_data_2024.pkl"
+    - "data/raw/ais_cape_data_2025.pkl"
+  vessel_selection:
+    method: "qualified_vessels"
+    max_vessels: 50  # null for all vessels
+    min_records_per_vessel: 100
+
+# Processing configuration
+processing:
+  max_records_per_vessel: 2000
+  h3_resolution: 5
+  feature_extraction: "comprehensive"  # All 54 features
+  min_h3_positions: 10
+  min_feature_rows: 5
+  sort_by_timestamp: true
+  include_data_year: true
+
+# Feature configuration
+features:
+  include_vessel_id: true
+  feature_set: "comprehensive"
+  
+# Output configuration
+output:
+  data_path: "data/processed/training_sets/massive_h3_sequences.pkl"
+  save_feature_analysis: true
+  feature_analysis_path: "data/processed/training_sets/massive_feature_quality.pkl"
+  include_sample_preview: true
+  include_temporal_analysis: true
+
+# Quality thresholds
+quality:
+  min_sequences_per_vessel: 10
+  skip_vessels_with_errors: true
+  analyze_feature_quality: true
+  feature_quality_thresholds:
+    constant_features: 1
+    limited_features: 5
+  performance_monitoring:
+    enable_progress_bars: true
+    log_memory_usage: true
+    estimate_output_size: true
+
+# Performance configuration
+performance:
+  chunk_processing: false  # Set to true for very large datasets
+  memory_efficient: true
+  parallel_processing: false

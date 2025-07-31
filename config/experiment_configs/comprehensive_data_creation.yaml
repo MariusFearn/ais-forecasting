@@ -1,0 +1,48 @@
+# Comprehensive Data Creation Configuration
+# Phase 4: Multiple vessels, all features, quality analysis
+
+defaults:
+  - ../default
+
+experiment:
+  name: "comprehensive_data_creation"
+  description: "Phase 4: Multi-vessel with comprehensive feature extraction"
+  phase: 4
+
+# Data source configuration
+data_source:
+  data_files:
+    - "data/raw/ais_cape_data_2024.pkl"
+  vessel_selection:
+    method: "top_records"
+    max_vessels: 10
+    min_records_per_vessel: 50
+
+# Processing configuration
+processing:
+  max_records_per_vessel: 500
+  h3_resolution: 5
+  feature_extraction: "comprehensive"  # All 42 features
+  min_h3_positions: 5
+  min_feature_rows: 3
+
+# Feature configuration
+features:
+  include_vessel_id: true   # Multi-vessel training
+  feature_set: "comprehensive"  # All available features
+  
+# Output configuration
+output:
+  data_path: "data/processed/training_sets/comprehensive_h3_sequences.pkl"
+  save_feature_analysis: true
+  feature_analysis_path: "data/processed/training_sets/feature_quality_analysis.pkl"
+  include_sample_preview: true
+
+# Quality thresholds
+quality:
+  min_sequences_per_vessel: 5
+  skip_vessels_with_errors: true
+  analyze_feature_quality: true
+  feature_quality_thresholds:
+    constant_features: 1      # unique_count <= 1
+    limited_features: 3       # unique_count <= 3

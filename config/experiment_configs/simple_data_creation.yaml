@@ -1,0 +1,43 @@
+# Simple Data Creation Configuration
+# Phase 1: Single vessel, basic features, minimal data
+
+defaults:
+  - ../default
+
+experiment:
+  name: "simple_data_creation"
+  description: "Phase 1: Single vessel with basic feature extraction"
+  phase: 1
+
+# Data source configuration
+data_source:
+  data_files:
+    - "data/raw/ais_cape_data_2024.pkl"
+  vessel_selection:
+    method: "top_records"  # Select vessel with most records
+    max_vessels: 1
+    min_records_per_vessel: 100
+
+# Processing configuration
+processing:
+  max_records_per_vessel: 200
+  h3_resolution: 5
+  feature_extraction: "basic"  # Only extract basic features
+  min_h3_positions: 5
+  min_feature_rows: 3
+
+# Feature configuration
+features:
+  include_vessel_id: false  # Single vessel, no need for ID
+  feature_set: "simple"     # 6 basic features only
+  
+# Output configuration
+output:
+  data_path: "data/processed/training_sets/simple_h3_sequences.pkl"
+  save_feature_analysis: false
+  include_sample_preview: true
+
+# Quality thresholds
+quality:
+  min_sequences_per_vessel: 5
+  skip_vessels_with_errors: true
