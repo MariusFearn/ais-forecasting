@@ -5,7 +5,16 @@ import os
 import glob
 from pathlib import Path
 import pickle
-from pytorch_forecasting import TimeSeriesDataSet
+
+# Try to import pytorch_forecasting with graceful fallback
+try:
+    from pytorch_forecasting import TimeSeriesDataSet
+    PYTORCH_FORECASTING_AVAILABLE = True
+except ImportError:
+    PYTORCH_FORECASTING_AVAILABLE = False
+    # Create a dummy class for type hints when pytorch_forecasting is not available
+    class TimeSeriesDataSet:
+        pass
 
 
 class AISDataLoader:
@@ -165,6 +174,12 @@ class AISDataLoader:
         Returns:
             Tuple[TimeSeriesDataSet, TimeSeriesDataSet]: Training and validation datasets
         """
+        if not PYTORCH_FORECASTING_AVAILABLE:
+            raise ImportError(
+                "pytorch_forecasting is required for TimeSeriesDataSet functionality. "
+                "Install with: pip install pytorch-forecasting"
+            )
+        
         # Define the training cutoff (e.g., use the last 30 days for validation)
         validation_cutoff = df[time_idx].max() - max_prediction_length
         

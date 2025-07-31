@@ -11,7 +11,12 @@ __author__ = "AIS Forecasting Team"
 from src.data import loader, preprocessing
 from src.features import geo_features, time_features
 from src.models import base_model, tft_model, nbeats_model
-from src.utils import metrics, optimize
+from src.utils import metrics
+try:
+    from src.utils import optimize
+    OPTIMIZATION_AVAILABLE = True
+except ImportError:
+    OPTIMIZATION_AVAILABLE = False
 from src.visualization import plots
 
 __all__ = [

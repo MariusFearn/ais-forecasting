@@ -25,15 +25,9 @@ import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 
 # Local imports
-from src.data.preprocessing import DataPreprocessor, preprocess_vessel_data, fix_datetime_categorical_issues, ChunkedDataLoader
-try:
-    from src.utils.metrics import calculate_h3_distance_error
-    H3_METRICS_AVAILABLE = True
-except ImportError:
-    H3_METRICS_AVAILABLE = False
-    def calculate_h3_distance_error(*args, **kwargs):
-        return 0.0
-from src.features.vessel_features import VesselFeatureExtractor
+from src.data.preprocessing import DataPreprocessor, preprocess_vessel_data
+from src.utils.metrics import calculate_h3_distance_error
+from src.features.vessel_features import VesselFeatureEngine
 
 warnings.filterwarnings('ignore')
 
@@ -76,7 +70,7 @@ class TrainingPipeline:
         
         # Initialize components
         self.preprocessor = DataPreprocessor(memory_optimize=memory_optimize, verbose=verbose)
-        self.feature_engine = VesselFeatureExtractor()
+        self.feature_engine = VesselFeatureEngine()
         
         # Training state
         self.data = None
@@ -116,16 +110,12 @@ class TrainingPipeline:
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
         
-    def load_data(self, data_path: Optional[str] = None, 
-                  use_chunked_loader: bool = False,
-                  max_vessels: Optional[int] = None) -> pd.DataFrame:
+    def load_data(self, data_path: Optional[str] = None) -> pd.DataFrame:
         """
-        Load training data from pickle file with Phase 5 memory fixes.
+        Load training data from pickle file.
         
         Args:
             data_path: Path to data file (overrides instance path)
-            use_chunked_loader: Whether to use memory-efficient chunked loading
-            max_vessels: Maximum number of vessels to load (for sampling large datasets)
             
         Returns:
             Loaded DataFrame
@@ -137,43 +127,12 @@ class TrainingPipeline:
         if self.verbose:
             print(f"📂 Loading data from: {path}")
             
-        try:
-            if use_chunked_loader:
-                # Use chunked loader for large datasets
-                loader = ChunkedDataLoader()
-                if '*' in str(path) or '{year}' in str(path):
-                    # Multi-file pattern
-                    years = ['2018', '2019', '2020', '2021', '2022', '2023', '2024']
-                    data = loader.load_multi_year_data(str(path), years, max_vessels)
-                else:
-                    # Single file
-                    data = loader._load_file_safely(str(path))
-            else:
-                # Standard loading
-                data = pd.read_pickle(path)
-                
-                # Apply immediate memory optimization for large datasets
-                if len(data) > 100000:  # 100K rows threshold
-                    if self.verbose:
-                        print("   🔧 Applying memory optimizations for large dataset...")
-                    loader = ChunkedDataLoader()
-                    data = loader._optimize_memory_immediately(data)
-            
-            # CRITICAL PHASE 5 FIX: Handle datetime and categorical issues
-            if self.verbose:
-                print("   🔧 Applying Phase 5 data type fixes...")
-            data = fix_datetime_categorical_issues(data)
-            
-            if self.verbose:
-                print(f"   ✅ Loaded {len(data):,} records")
-                print(f"   📊 Shape: {data.shape}")
-                print(f"   💾 Memory: {data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
-                
-        except MemoryError:
-            print("   ⚠️  Memory error detected, switching to chunked loading...")
-            loader = ChunkedDataLoader()
-            data = loader._load_file_safely(str(path))
-            data = fix_datetime_categorical_issues(data)
+        data = pd.read_pickle(path)
+        
+        if self.verbose:
+            print(f"   ✅ Loaded {len(data):,} records")
+            print(f"   📊 Shape: {data.shape}")
+            print(f"   💾 Memory: {data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
             
         self.data = data
         return data

@@ -1,9 +1,35 @@
 import os
 import torch
-import lightning.pytorch as pl
-from pytorch_forecasting import TimeSeriesDataSet, NBeats
-from pytorch_forecasting.metrics import SMAPE
 from typing import Dict, Any, Tuple, List, Optional
+
+# Try to import pytorch_lightning with graceful fallback
+try:
+    import lightning.pytorch as pl
+    PYTORCH_LIGHTNING_AVAILABLE = True
+except ImportError:
+    try:
+        import pytorch_lightning as pl
+        PYTORCH_LIGHTNING_AVAILABLE = True
+    except ImportError:
+        PYTORCH_LIGHTNING_AVAILABLE = False
+        class pl:
+            class LightningModule:
+                pass
+
+# Try to import pytorch_forecasting with graceful fallback
+try:
+    from pytorch_forecasting import TimeSeriesDataSet, NBeats
+    from pytorch_forecasting.metrics import SMAPE
+    PYTORCH_FORECASTING_AVAILABLE = True
+except ImportError:
+    PYTORCH_FORECASTING_AVAILABLE = False
+    # Create dummy classes for type hints
+    class TimeSeriesDataSet:
+        pass
+    class NBeats:
+        pass
+    class SMAPE:
+        pass
 
 from src.models.base_model import BaseTimeSeriesModel
 
