@@ -1,37 +1,53 @@
 # Core ML libraries
-torch>=2.0.0
-pytorch-lightning>=2.0.0
-pytorch-forecasting>=1.0.0
-numpy>=1.21.0
-pandas>=1.3.0
-scikit-learn>=1.0.0
-xgboost>=1.7.0
+torch>=2.7.0
+numpy>=2.0.0
+pandas>=2.3.0
+scikit-learn>=1.7.0
+xgboost>=2.1.0
+scipy>=1.15.0
 
-# Geospatial libraries
-h3>=3.7.0
-geopandas>=0.12.0
-folium>=0.14.0
+# Geospatial libraries (CRITICAL for AIS project)
+# Note: h3 package is called 'h3-py' in conda but 'h3' in pip
+h3>=3.7.4
+geopandas>=1.1.0
+folium>=0.19.0
+pyproj>=3.7.1
+shapely>=2.1.1
+pyogrio>=0.11.0
+geopy>=2.4.1
 
 # Visualization
-matplotlib>=3.5.0
-seaborn>=0.11.0
-plotly>=5.0.0
+matplotlib>=3.10.0
+seaborn>=0.13.0
+plotly>=6.1.0
 
-# Hyperparameter optimization
-optuna>=3.0.0
+# Data Processing
+statsmodels>=0.14.0
+numexpr>=2.10.0
+bottleneck>=1.4.0
 
 # Configuration management
 PyYAML>=6.0
-hydra-core>=1.3.0
 
-# Development and testing
-pytest>=7.0.0
-pytest-cov>=4.0.0
-black>=22.0.0
-flake8>=5.0.0
-
-# Jupyter
+# Jupyter Environment
 jupyter>=1.0.0
+jupyterlab>=4.4.0
 ipykernel>=6.0.0
-geopy>=2.4.1
-holidays
+notebook-shim>=0.2.0
+
+# Utilities
+requests>=2.32.0
+tqdm>=4.67.0
+holidays>=0.75
+
+# Optional: Advanced ML (uncomment if needed)
+# pytorch-lightning>=2.0.0
+# pytorch-forecasting>=1.0.0
+# optuna>=3.0.0
+# hydra-core>=1.3.0
+
+# Optional: Development tools (uncomment if needed)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# black>=22.0.0
+# flake8>=5.0.0
