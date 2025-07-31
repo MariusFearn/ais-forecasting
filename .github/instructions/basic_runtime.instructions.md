@@ -71,9 +71,5 @@ ais-forecasting/
 ├── requirements.txt            # A list of all Python packages required to run the project. Update this if we need new models and make sure we are in ML environment if we install something.
 └── .gitignore                  # Specifies files and folders to be ignored by Git.
 
-## 🎯 Next Steps
-1. Scale up training data (more vessels)
-2. Try XGBoost model
-3. Add visualization tools
 
 In terminal we use conda ML - not base - conda activate ML must be run before running any scripts or notebooks.

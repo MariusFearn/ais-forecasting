@@ -106,7 +106,7 @@ python scripts/evaluate_model.py --config comprehensive_evaluation
 
 ## 🏗️ **Project Architecture**
 
-### **Unified Scripts** (Clean & Professional)
+### **Unified Scripts** 
 ```
 scripts/
 ├── create_training_data.py         # 🔄 UNIFIED data creation
