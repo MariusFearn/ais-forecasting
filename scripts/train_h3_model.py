@@ -138,6 +138,13 @@ def prepare_features(df, config):
         feature_cols = [col for col in df.columns if col not in exclude_cols]
         X = df[feature_cols].copy()
         
+        # Convert datetime columns to numeric (timestamps)
+        for col in X.columns:
+            if X[col].dtype == 'datetime64[ns]' or 'datetime64[ns' in str(X[col].dtype):
+                print(f"   🕐 Converting datetime column: {col}")
+                X[col] = X[col].astype('int64') // 10**9  # Convert to seconds since epoch
+                X[col] = X[col].fillna(0)
+        
         # Convert categorical columns to numeric
         for col in X.columns:
             if X[col].dtype == 'object':
@@ -370,6 +377,17 @@ def train_h3_predictor(config_name):
             test_mask = np.isin(y_test, list(train_classes))
             X_test = X_test[test_mask]
             y_test = y_test[test_mask]
+            
+            # Re-encode classes to ensure consecutive numbering for XGBoost
+            unique_train_classes = np.unique(y_train)
+            class_mapping = {old_class: new_class for new_class, old_class in enumerate(unique_train_classes)}
+            y_train = np.array([class_mapping[cls] for cls in y_train])
+            y_test = np.array([class_mapping[cls] for cls in y_test])
+            
+            # Update h3_encoder to match the new mapping
+            original_classes = h3_encoder.classes_[unique_train_classes]
+            h3_encoder.classes_ = original_classes
+            
         else:
             X_train, X_test, y_train, y_test = train_test_split(
                 X_selected, y_encoded, test_size=test_size, random_state=random_state, stratify=y_encoded
