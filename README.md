@@ -9,37 +9,51 @@ A simple machine learning system for predicting individual vessel movements usin
 
 ## ✅ Current Status
 
-### COMPLETED (Phase 1-2):
+### COMPLETED (Phase 1-3):
 - **Data**: 8 years Cape Town AIS data (2018-2025, 8.3M+ records)
 - **H3 Indexing**: Resolution 5 (8.54km edge length) 
 - **Vessel Tracking**: Convert GPS → H3 cell sequences
-- **Feature Engineering**: 65 vessel features extracted and validated
+- **Feature Engineering**: ✅ **54 features implemented** - 42 high-quality features ready for training (training pipeline needs update)
 - **Working ML Pipeline**: Random Forest classifier trained (91.8% train accuracy)
+- **Code Refactoring**: ✅ Professional src/scripts architecture implemented
+- **Multi-vessel Training**: ✅ Enhanced model with 24,950 training samples
 
-### 🎯 CURRENT FOCUS (Phase 3):
-- ✅ Created training data (199 sequences)
-- ✅ Trained first ML model (Random Forest)
-- 🎯 Improve accuracy with more data/better models
-- 🎯 Add visualization and evaluation tools
+### 🎯 CURRENT FOCUS (Phase 4):
+- ✅ Simple model: 199 training sequences, 5% accuracy baseline
+- ✅ Enhanced model: 24,950 sequences from 50 vessels, 0.9% accuracy
+- 🎯 Improve model accuracy with better features/algorithms
+- 🎯 Add comprehensive evaluation and visualization tools
 
 ## 🚀 Quick Start
 
-### 1. Simple Model (Single Vessel)
-This is the baseline model to verify the pipeline.
+### 1. Simple Model (Single Vessel) - Working ✅
+This is the baseline model to verify the pipeline works end-to-end.
 ```bash
-# Run our current working example
-python scripts/create_simple_training_data.py   # Create training data (1 vessel)
-python scripts/train_simple_model.py            # Train ML model
+# Activate conda environment
+conda activate ML
+
+# Run the complete simple pipeline
+python scripts/create_simple_training_data.py   # Create training data (199 samples)
+python scripts/train_simple_model.py            # Train Random Forest model (5% accuracy)
 ```
 
-### 2. Enhanced Model (All Vessels)
-This scales up the training to all available vessels for a better model.
+### 2. Enhanced Model (Multi-Vessel) - Working ✅
+This scales up to all available vessels for better prediction accuracy.
 ```bash
-# Create the comprehensive dataset
-python scripts/create_multi_vessel_training_data.py
+# Create comprehensive multi-vessel dataset  
+python scripts/create_multi_vessel_training_data.py  # 24,950 samples from 50 vessels
 
-# Train the enhanced model
-python scripts/train_enhanced_model.py
+# Train enhanced model with vessel-specific features
+python scripts/train_enhanced_model.py               # Enhanced Random Forest (0.9% accuracy)
+```
+
+### 3. Evaluation & Prediction (Available)
+```bash
+# Evaluate trained models (requires lightning package)
+python scripts/evaluate.py <model_path> --data-path <test_data>
+
+# Make predictions with trained models (requires lightning package)  
+python scripts/predict.py <model_path> --speed 10 --heading 90 --lat -33.9 --lon 18.4
 ```
 
 ### 2. Project Structure & Cleanup Plan
@@ -85,10 +99,7 @@ ais-forecasting/
 │   ├── train_enhanced_model.py # Trains the primary, enhanced model.
 │   ├── evaluate.py             # Runs model evaluation from the command line.
 │   ├── predict.py              # Runs predictions using a trained model.
-│   ├── test_simple.py          # A simple test script for quick validation.
-│   ├── create_training_data.py # Delete: Redundant, functionality is split.
-│   ├── train.py                # Delete: Redundant, functionality is split.
-│   └── quick_start_h3.py       # Delete: Old script, functionality now in notebooks.
+│   └── test_simple.py          # A simple test script for quick validation.
 │
 ├── src/                        # Contains all the project's source code as a Python package.
 │   ├── __init__.py             # Makes 'src' a package, allowing imports.
@@ -112,13 +123,6 @@ ais-forecasting/
 └── .gitignore                  # Specifies files and folders to be ignored by Git.
 ```
 
-**Cleanup Plan:**
-1.  **Delete redundant root files**: `PHASE_2_SUMMARY.md`, `PHASE_3_PLAN.md`, `PHASE_3_PLAN_clean.md`, `PHASE_3_SIMPLE.md`.
-2.  **Delete redundant scripts**: `scripts/create_training_data.py`, `scripts/train.py`, `scripts/quick_start_h3.py`.
-3.  **Delete redundant `__init__` files**: `src/models/__init___new.py`, `src/utils/__init___new.py`.
-4.  **Move misplaced script**: Move `visualizations/ultra_fast_maritime_visualization.py` to `scripts/`.
-5.  **Modify `.gitignore` file** to exclude `__pycache__` and other temporary files from version control.
-```
 
 ## 📊 Data Summary
 
@@ -129,44 +133,84 @@ ais-forecasting/
 - **Coverage**: Cape Town maritime area, UTC timestamps
 - **Key columns**: `imo` (vessel ID), `lat/lon` (position), `speed`, `heading`, `mdt` (timestamp)
 
-### Feature Engineering (65 features)
-The feature engineering pipeline produces 65 detailed features for each vessel time step, categorized as follows:
+### Feature Engineering (54 Features - Implemented & Working)
+**✅ IMPLEMENTED**: The feature engineering pipeline now extracts **54 real features** with **42 high-quality features** ready for training.
 
-- **Core State Features (9 features)**: `current_h3_cell`, `current_speed`, `current_heading`, `time_in_current_cell`, and other state indicators.
-- **Historical Sequence Features (8 features)**: `cells_visited_6h/12h/24h`, `avg_speed_6h/12h/24h`, and rate of cell changes.
-- **Movement Pattern Features (12 features)**: `speed_trend_6h/12h`, `speed_std_6h/12h`, `heading_consistency_6h/12h`, and movement efficiency.
-- **Journey Characteristics (3 features)**: `total_journey_time`, `distance_from_start_km`, and cumulative cells visited.
-- **Contextual Features (6 features)**: `journey_phase` (e.g., 'transit'), `likely_cargo_status`, and coastal proximity.
-- **Advanced Features (27 features)**: Lag features at 1h, 6h, 12h intervals and other rolling statistics.
+**Currently Implemented Categories:**
+
+**Basic State Features (6 features):**
+- `current_h3_cell`, `current_speed`, `current_heading`, `lat`, `lon`, `time_in_current_cell`
+
+**Historical Sequence Features (14 features):**
+- `cells_visited_6h/12h/24h`, `avg_speed_6h/12h/24h`, `cell_transitions_6h`
+- `time_in_cell_hours`, `cells_visited_cumulative`, `cell_group`
+
+**Movement Pattern Features (9 features):**
+- `speed_trend_6h/12h`, `speed_std_6h/12h`, `heading_consistency_6h/12h`
+- `delta_distance`, `est_speed`, `cell_transition`
+
+**Journey Characteristics (6 features):**
+- `total_journey_time`, `distance_from_start_km`, `journey_phase`
+- Port detection: `likely_port_departure`, `likely_port_approach`
+
+**Geographic Features (1 feature):**
+- `ocean_region` (Cape Town area classification)
+
+**Operational Features (7 features):**
+- `hour_of_day`, `day_of_week`, `is_weekend`
+- AIS metadata: `nav_status`, `destination`, `eta`
+
+**Vessel Metadata (11 features):**
+- Vessel identification, position history, timestamps, draught
+
+### 🔮 Suggested Future Features (Advanced Implementation)
+These features would require external data sources or complex domain knowledge:
+
+**Enhanced Geographic Context:**
+- Coastal proximity (requires coastline data)
+- Water depth estimation (requires bathymetry data)  
+- Shipping lane detection (requires traffic pattern data)
+- Port vicinity indicators (requires port database)
+
+**Advanced Operational Context:**
+- Cargo status estimation (requires vessel type analysis)
+- Weather impact features (requires weather API)
+- Fuel efficiency patterns (requires engine data)
+- Tide and current effects (requires oceanographic data)
+
+**Sophisticated Movement Analysis:**
+- Multi-step prediction sequences
+- Fleet behavior patterns
+- Route optimization metrics
+- Anomaly detection features
 
 ## 🤖 Machine Learning Pipeline
 
 ### Current Working Example:
 ```
-Raw AIS Data → H3 Sequences → 65 Features → Random Forest → Next Cell Prediction
+Raw AIS Data → H3 Sequences → 54 Features (42 high-quality) → Random Forest → Next Cell Prediction
 ```
+**Challenge**: Training pipeline currently only uses 6-9 basic features instead of all 42 available high-quality features.
 
 ### Model Performance:
-- **Training Accuracy**: 91.8% (shows model learns patterns)
-- **Test Accuracy**: 5.0% (162 possible cells, room for improvement)
+- **Simple Model (1 vessel)**: 91.8% train, 5.0% test accuracy (162 cells)
+- **Enhanced Model (50 vessels)**: 55.2% train, 0.9% test accuracy (3,642 cells)
+- **Challenge**: Large number of possible H3 cells makes prediction difficult
 - **Feature Importance**: Location (lat/lon) most important, then current H3 cell
 
 ### Success Criteria:
 - **Target**: >60% accuracy predicting next H3 cell
 - **Distance**: <15km average error from actual position
+- **Current Gap**: Need better features or different modeling approach
 
 ## 🔧 Technical Implementation
 
-### Phase 2 Accomplishments:
-- **VesselH3Tracker**: Converts GPS data to H3 sequences with quality validation
-- **VesselFeatureExtractor**: Creates 65 comprehensive vessel features
-- **Tested**: Validated on vessel IMO 9883089 (364-day journey, 9,151 records, 1,530 H3 cells)
-
-### Next Steps:
-1. **More training data** - Add more vessels to training set
-2. **Better features** - Use more of the 65 available features
-3. **Advanced models** - Try XGBoost, Neural Networks
-4. **Evaluation tools** - Visualize predictions on maps
+### Next Steps (Phase 4):
+1. **Update training pipeline** - Use all 42 high-quality features instead of just 6-9 basic ones
+2. **Feature selection** - Determine which of the 42 features are most predictive
+3. **Better algorithms** - Try XGBoost, ensemble methods with complete feature set
+4. **Evaluation framework** - Comprehensive metrics and distance-based evaluation
+5. **Advanced features** - Implement suggested future features requiring external data
 
 ## 📦 Dependencies
 
@@ -180,7 +224,7 @@ Install: `pip install -r requirements.txt`
 ## 🎯 Why This Approach Works
 
 1. **Clear Success Metrics** - Easy to measure if predictions are correct
-2. **Solid Foundation** - 65 validated features from real vessel data
+2. **Incomplete Foundation** - Feature engineering framework exists but only basic features implemented
 3. **Simple First** - Random Forest before complex deep learning
 4. **Extensible** - Can add multi-step prediction, fleet patterns later
 5. **Real Value** - Vessel operators want to know where ships go next
@@ -203,4 +247,51 @@ For questions about this project, open an issue or contact the maintainer.
 
 ---
 
-*Focus: Simple vessel trajectory prediction that works, then extend later.*
+## 🔍 Code Analysis & Current Status
+
+### ✅ **FEATURE ENGINEERING STATUS**: Complete & Working
+
+**ACTUAL IMPLEMENTATION:** **54 features** with **42 high-quality features** ready for training
+
+#### **What's Actually Implemented:**
+
+**Complete Feature Set (54 features):**
+- **High Quality (42 features)**: Real calculated values with good variance
+- **Limited Use (12 features)**: Constant values or binary flags (vessel ID, status flags)
+
+**Feature Categories Working:**
+- ✅ **Basic State**: 6 features (position, speed, heading, time)
+- ✅ **Historical Sequences**: 14 features (rolling windows, cumulative metrics)  
+- ✅ **Movement Patterns**: 9 features (trends, variability, transitions)
+- ✅ **Journey Characteristics**: 6 features (time, distance, phases)
+- ✅ **Geographic Context**: 1 feature (regional classification)
+- ✅ **Operational Context**: 7 features (time-based, AIS metadata)
+
+#### **Current Bottleneck: Training Pipeline**
+The **feature extraction works perfectly** but the **training pipeline ignores most features**:
+
+**Training Uses:** Only 6-9 basic features  
+**Available:** 42 high-quality features ready for use  
+**Gap:** Training pipeline needs update to use all features
+
+#### **Performance Issues Explained:**
+- **Simple Model**: 5% accuracy - using only 6 features out of 42 available
+- **Enhanced Model**: 0.9% accuracy - using only 9 features out of 42 available  
+- **Root Cause**: Training pipeline limitation, not feature engineering
+
+#### **Immediate Priority:**
+1. ✅ **Feature engineering**: Complete and working (54 features)
+2. 🎯 **Training pipeline**: Update to use all 42 high-quality features
+3. 🎯 **Feature selection**: Identify most predictive features
+4. 🎯 **Model optimization**: Better algorithms with complete feature set
+
+### 🎯 **Updated Current Status:**
+- ✅ **Data pipeline**: Working H3 conversion and comprehensive feature extraction
+- ✅ **Code architecture**: Clean src/scripts structure implemented  
+- ✅ **Feature engineering**: Complete - 54 features with 42 high-quality
+- 🎯 **Training optimization**: Use all available features instead of basic subset
+- 🎯 **Model improvement**: Expected significant accuracy gains with full feature set
+
+---
+
+*Focus: Utilize the comprehensive feature set that's already implemented.*

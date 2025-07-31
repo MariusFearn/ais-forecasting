@@ -135,9 +135,6 @@ class VesselFeatureExtractor:
                     window=window, min_periods=1
                 ).std()
         
-        # Movement efficiency placeholder
-        df['movement_efficiency_6h'] = 1.0
-        
         return df
     
     def _add_journey_characteristics(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -179,52 +176,25 @@ class VesselFeatureExtractor:
     def _add_geographic_context(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Add geographic context features (Phase 2.3)
+        
+        Note: Advanced geographic features requiring external data sources
+        have been moved to future implementation phase.
         """
-        # Simplified geographic features (can be enhanced with actual port/coastline data)
-        
-        # Approximate coastal proximity (distance from land - simplified)
-        df['estimated_coastal_proximity'] = df.apply(
-            lambda row: self._estimate_coastal_distance(row['lat'], row['lon']), axis=1
-        )
-        
-        # Water depth estimation (very rough approximation)
-        df['estimated_water_depth'] = df.apply(
-            lambda row: self._estimate_water_depth(row['lat'], row['lon']), axis=1
-        )
-        
-        # Regional classification
+        # Regional classification - this works well with lat/lon
         df['ocean_region'] = df.apply(
             lambda row: self._classify_ocean_region(row['lat'], row['lon']), axis=1
         )
-        
-        # Shipping lane indicators (simplified)
-        df['likely_shipping_lane'] = self._detect_shipping_lanes(df)
         
         return df
     
     def _add_operational_context(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Add operational context features (Phase 2.3)
-        """
-        # Cargo status estimation
-        df['likely_cargo_status'] = self._estimate_cargo_status(df)
         
-        # Draught change indicators
-        if 'draught' in df.columns:
-            df['draught_change_6h'] = df['draught'].rolling(window=6, min_periods=2).apply(
-                lambda x: x.iloc[-1] - x.iloc[0] if len(x) > 1 else 0, raw=False
-            )
-            df['draught_trend_12h'] = df['draught'].rolling(window=12, min_periods=2).apply(
-                lambda x: np.polyfit(range(len(x)), x, 1)[0] if len(x) > 1 else 0, raw=False
-            )
-        
-        # Port approach behavior
-        df['port_approach_speed_pattern'] = self._analyze_port_approach_behavior(df)
-        
-        # Anchorage/stationary detection
-        df['anchorage_time_hours'] = self._detect_anchorage_periods(df)
-        
-        # Time-based operational features
+        Note: Complex operational features requiring domain knowledge
+        have been moved to future implementation phase.
+        """        
+        # Time-based operational features - these are reliable
         df['hour_of_day'] = df['mdt'].dt.hour
         df['day_of_week'] = df['mdt'].dt.dayofweek
         df['is_weekend'] = (df['day_of_week'] >= 5).astype(int)
