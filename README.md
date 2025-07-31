@@ -4,7 +4,23 @@
 
 A professional machine learning system for predicting vessel movements using AIS data and H3 geospatial indexing with a **unified, configuration-driven pipeline**.
 
-## 🎯 Goal
+## � **Interactive Demo - Try It Now!**
+**🚀 Want to see the complete ML pipeline in action?**
+```bash
+# Open our beginner-friendly notebook that demonstrates the entire system:
+jupyter notebook notebooks/intro_to_ml.ipynb
+```
+**✨ This notebook shows:**
+- 📊 Complete 4-step ML pipeline with visualizations
+- 🎯 Real-time execution of data creation → training → testing → evaluation  
+- 📈 Beginner-friendly explanations for non-technical audiences
+- 🏆 See 85.5% accuracy achievement in action!
+
+*Perfect for stakeholders, demos, and understanding how the system works end-to-end.*
+
+---
+
+## �🎯 Goal
 **Predict which H3 cell a vessel will visit next** based on its current position and movement patterns.
 
 ## ✅ Current Status
