@@ -1,103 +1,100 @@
 #!/usr/bin/env python3
 """
-Simple test to verify GPU configuration integration.
-Tests that YAML config values are properly passed to XGBoost model creation.
+Test Updated Trajectory Processor
+
+Quick test to verify the updated trajectory processor works correctly.
 """
 
-import yaml
-import xgboost as xgb
+import sys
 from pathlib import Path
+import pandas as pd
+import time
 
-def test_yaml_to_xgboost_integration():
-    """Test that YAML config gets properly applied to XGBoost."""
+# Add src to Python path
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+def test_updated_trajectory_processor():
+    """Test the updated trajectory processor function."""
+    print("🔍 Testing Updated Trajectory Processor")
+    print("="*50)
     
-    print("🧪 Testing YAML → XGBoost Integration")
-    print("=" * 50)
-    
-    # 1. Load the base config YAML
-    config_path = Path("../config/experiment_configs/base_h3_experiment.yaml")
-    
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f)
-    
-    print("📋 Loaded Config:")
-    if 'model' in config:
-        for key, value in config['model'].items():
-            print(f"   {key}: {value}")
-    
-    if 'hardware' in config:
-        print("🖥️  Hardware settings:")
-        for key, value in config['hardware'].items():
-            print(f"   {key}: {value}")
-    
-    # 2. Simulate what create_model() function does
-    print("\n🚀 Testing create_model() logic...")
-    
-    # Base parameters
-    params = {
-        'n_estimators': 10,  # Small for testing
-        'max_depth': 3,
-        'random_state': 42
-    }
-    
-    # Apply GPU settings from config (same logic as in scripts/train_h3_model.py)
-    if 'model' in config:
-        gpu_settings = ['tree_method', 'gpu_id', 'max_bin', 'device']
-        for setting in gpu_settings:
-            if setting in config['model']:
-                params[setting] = config['model'][setting]
-                print(f"   ✅ Applied {setting}: {config['model'][setting]}")
-    
-    # Apply hardware settings
-    if config.get('hardware', {}).get('cpu', {}).get('threads'):
-        params['n_jobs'] = config['hardware']['cpu']['threads']
-        print(f"   ✅ Applied n_jobs: {config['hardware']['cpu']['threads']}")
-    
-    print(f"\n🔧 Final XGBoost Parameters:")
-    for key, value in params.items():
-        print(f"   {key}: {value}")
-    
-    # 3. Create XGBoost model with these parameters
     try:
-        print(f"\n🎯 Creating XGBoost model...")
-        model = xgb.XGBClassifier(**params)
+        # Import the updated function
+        from src.features.trajectory_processor import extract_vessel_trajectories
+        print("✅ Function imported successfully")
         
-        # Check if parameters were applied
-        model_params = model.get_params()
-        print(f"\n✅ Model created successfully!")
-        print(f"🔍 Checking applied parameters:")
+        # Load test data
+        from src.data.loader import AISDataLoader
         
-        for key in ['tree_method', 'gpu_id', 'n_jobs', 'max_bin']:
-            if key in model_params:
-                print(f"   {key}: {model_params[key]}")
+        loader = AISDataLoader(data_dir=str(project_root / 'data'), use_duckdb=False)
+        print("🔄 Loading test data...")
         
-        # Test GPU availability
-        if model_params.get('tree_method') == 'gpu_hist':
-            try:
-                import torch
-                cuda_available = torch.cuda.is_available()
-                print(f"   🚀 GPU acceleration configured: {cuda_available}")
-                if cuda_available:
-                    print(f"   🔥 GPU device: {torch.cuda.get_device_name(0)}")
-                else:
-                    print(f"   ⚠️  GPU not available, will fallback to CPU")
-            except ImportError:
-                print(f"   ⚠️  PyTorch not available for GPU check")
+        ais_data = loader.load_multi_year_data_original(["2024"])
         
+        # Limit to 3 vessels for quick testing
+        unique_vessels = ais_data['imo'].unique()
+        test_vessels = unique_vessels[:3]
+        test_data = ais_data[ais_data['imo'].isin(test_vessels)].copy()
+        
+        print(f"📊 Test data: {len(test_data):,} records from {len(test_vessels)} vessels")
+        
+        # Test with simple config
+        config = {
+            'h3_resolution': 5,
+            'min_journey_length': 5,
+            'speed_threshold_knots': 0.5,
+            'time_gap_hours': 6
+        }
+        
+        print(f"🔧 Testing with config: {config}")
+        start_time = time.time()
+        
+        trajectories = extract_vessel_trajectories(test_data, config)
+        
+        processing_time = time.time() - start_time
+        
+        print(f"✅ Processing completed in {processing_time:.2f} seconds")
+        print(f"📊 Results:")
+        print(f"   Trajectories extracted: {len(trajectories)}")
+        
+        if len(trajectories) > 0:
+            print(f"   Columns: {list(trajectories.columns)}")
+            print(f"   Avg duration: {trajectories['duration_hours'].mean():.1f} hours")
+            print(f"   Avg points: {trajectories['point_count'].mean():.1f}")
+            print(f"   Avg H3 cells: {trajectories['unique_h3_cells'].mean():.1f}")
+            
+            # Show sample trajectory
+            sample = trajectories.iloc[0]
+            print(f"\n📋 Sample trajectory:")
+            print(f"   Vessel: {sample['vessel_id']}")
+            print(f"   Duration: {sample['duration_hours']:.1f} hours")
+            print(f"   Points: {sample['point_count']}")
+            print(f"   H3 sequence length: {len(sample['h3_sequence'])}")
+            print(f"   Start: ({sample['start_lat']:.4f}, {sample['start_lon']:.4f})")
+            print(f"   End: ({sample['end_lat']:.4f}, {sample['end_lon']:.4f})")
+            
         return True
         
     except Exception as e:
-        print(f"❌ Error creating XGBoost model: {e}")
+        print(f"❌ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
-if __name__ == "__main__":
-    success = test_yaml_to_xgboost_integration()
+def main():
+    """Run the test."""
+    print("🌊 UPDATED TRAJECTORY PROCESSOR TEST")
+    print("="*60)
     
-    if success:
-        print(f"\n🎉 Integration test PASSED!")
-        print(f"✅ YAML config is properly applied to XGBoost")
-        print(f"✅ GPU settings are configured")
-        print(f"✅ CPU threading is optimized")
+    if test_updated_trajectory_processor():
+        print("\n✅ Updated trajectory processor working correctly!")
+        print("\n🚀 Ready for pipeline integration!")
+        return 0
     else:
-        print(f"\n❌ Integration test FAILED!")
-        print(f"⚠️  Check configuration files")
+        print("\n❌ Updated trajectory processor test failed")
+        return 1
+
+if __name__ == "__main__":
+    exit_code = main()
+    sys.exit(exit_code)

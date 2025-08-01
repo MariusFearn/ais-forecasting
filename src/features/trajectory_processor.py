@@ -15,12 +15,7 @@ logger = get_logger(__name__)
 
 def extract_vessel_trajectories(
     ais_data: pd.DataFrame,
-    h3_resolution: int = 5,
-    min_journey_length: int = 5,
-    max_journey_length: int = 1000,
-    speed_threshold_knots: float = 0.5,
-    time_gap_hours: int = 6,
-    use_multiprocessing: bool = True
+    config: Optional[Dict] = None
 ) -> pd.DataFrame:
     """
     Extract vessel trajectories with H3 spatial indexing using original column names.
@@ -32,22 +27,92 @@ def extract_vessel_trajectories(
     - lon: longitude
     
     Args:
-        ais_data: AIS DataFrame with columns [imo, mdt, lat, lon]
-        h3_resolution: H3 spatial resolution (1-15, higher = finer)
-        min_journey_length: Minimum number of points to consider a valid journey
-        max_journey_length: Maximum journey length for performance
-        speed_threshold_knots: Minimum speed to consider vessel moving
-        time_gap_hours: Maximum time gap to consider continuous journey
-        use_multiprocessing: Whether to use parallel processing
+        ais_data: AIS DataFrame with columns [imo, mdt, lat, lon, speed]
+        config: Configuration dictionary with trajectory parameters
         
     Returns:
-        DataFrame with processed journeys containing H3 sequences
+        DataFrame with processed trajectories containing H3 sequences
         
     Raises:
         ValueError: If input data is invalid or empty
     """
-    logger.info(f"Extracting vessel trajectories with H3 resolution {h3_resolution}")
+    if config is None:
+        config = {
+            'h3_resolution': 5,
+            'min_journey_length': 5,
+            'speed_threshold_knots': 0.5,
+            'time_gap_hours': 6
+        }
+    
+    logger.info(f"Extracting vessel trajectories with H3 resolution {config.get('h3_resolution', 5)}")
     start_time = time.time()
+    
+    # Validate input data
+    required_columns = ['imo', 'lat', 'lon', 'mdt', 'speed']
+    missing_columns = [col for col in required_columns if col not in ais_data.columns]
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {missing_columns}")
+    
+    if ais_data.empty:
+        logger.warning("Empty input data, returning empty DataFrame")
+        return pd.DataFrame()
+    
+    logger.info(f"Processing {len(ais_data):,} records from {ais_data['imo'].nunique():,} vessels")
+    
+    trajectories = []
+    
+    # Process each vessel separately
+    for vessel_id in ais_data['imo'].unique():
+        vessel_data = ais_data[ais_data['imo'] == vessel_id].copy()
+        vessel_data = vessel_data.sort_values('mdt').reset_index(drop=True)
+        
+        if len(vessel_data) < config.get('min_journey_length', 5):
+            continue
+            
+        # Add H3 cells
+        vessel_data['h3_cell'] = vessel_data.apply(
+            lambda row: h3.geo_to_h3(row['lat'], row['lon'], config.get('h3_resolution', 5)), 
+            axis=1
+        )
+        
+        # Split into trajectory segments based on time gaps
+        vessel_data['time_diff'] = vessel_data['mdt'].diff().dt.total_seconds() / 3600  # hours
+        gap_indices = vessel_data[vessel_data['time_diff'] > config.get('time_gap_hours', 6)].index
+        
+        # Create trajectory segments
+        start_idx = 0
+        for gap_idx in list(gap_indices) + [len(vessel_data)]:
+            segment = vessel_data.iloc[start_idx:gap_idx].copy()
+            
+            if len(segment) >= config.get('min_journey_length', 5):
+                # Create trajectory summary
+                trajectory = {
+                    'vessel_id': vessel_id,
+                    'trajectory_id': f"{vessel_id}_{start_idx}",
+                    'start_time': segment['mdt'].min(),
+                    'end_time': segment['mdt'].max(),
+                    'duration_hours': (segment['mdt'].max() - segment['mdt'].min()).total_seconds() / 3600,
+                    'point_count': len(segment),
+                    'unique_h3_cells': segment['h3_cell'].nunique(),
+                    'avg_speed': segment['speed'].mean(),
+                    'max_speed': segment['speed'].max(),
+                    'stationary_points': len(segment[segment['speed'] < config.get('speed_threshold_knots', 0.5)]),
+                    'h3_sequence': segment['h3_cell'].tolist(),
+                    'start_lat': segment['lat'].iloc[0],
+                    'start_lon': segment['lon'].iloc[0],
+                    'end_lat': segment['lat'].iloc[-1],
+                    'end_lon': segment['lon'].iloc[-1]
+                }
+                trajectories.append(trajectory)
+            
+            start_idx = gap_idx
+    
+    result_df = pd.DataFrame(trajectories)
+    
+    processing_time = time.time() - start_time
+    logger.info(f"Extracted {len(result_df)} trajectory segments in {processing_time:.2f} seconds")
+    
+    return result_df
     
     if ais_data.empty:
         raise ValueError("Input AIS data is empty")
