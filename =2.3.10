@@ -1,7 +1,0 @@
-Collecting dtaidistance
-  Downloading dtaidistance-2.3.13-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (13 kB)
-Requirement already satisfied: numpy in /home/marius/miniconda3/envs/ML/lib/python3.10/site-packages (from dtaidistance) (2.0.1)
-Downloading dtaidistance-2.3.13-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.9 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 11.6 MB/s eta 0:00:00
-Installing collected packages: dtaidistance
-Successfully installed dtaidistance-2.3.13
