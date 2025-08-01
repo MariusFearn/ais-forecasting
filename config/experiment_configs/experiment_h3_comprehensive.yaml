@@ -2,7 +2,7 @@
 # Phase 4: XGBoost with 42 high-quality features and feature selection
 
 defaults:
-  - base_h3_experiment
+  - experiment_h3_base
 
 experiment:
   name: "comprehensive_h3_prediction"

@@ -5,7 +5,7 @@ defaults:
   - ../default
 
 experiment:
-  name: "comprehensive_data_creation"
+  name: "creation_data_comprehensive"
   description: "Phase 4: Multi-vessel with comprehensive feature extraction"
   phase: 4
 

@@ -5,7 +5,7 @@ defaults:
   - ../default
 
 experiment:
-  name: "simple_data_creation"
+  name: "creation_data_simple"
   description: "Phase 1: Single vessel with basic feature extraction"
   phase: 1
 

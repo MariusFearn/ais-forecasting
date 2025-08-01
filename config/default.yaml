@@ -5,6 +5,13 @@ paths:
   experiments: "experiments"
   evaluation_results: "experiments/evaluation_results"
 
+# DuckDB configuration
+duckdb:
+  enabled: true
+  data_format: "parquet"
+  memory_limit: "48GB"
+  threads: 14
+
 # Hardware optimization settings
 hardware:
   cpu:

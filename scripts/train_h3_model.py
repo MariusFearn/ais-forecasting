@@ -8,9 +8,9 @@ Configurable training script that can handle all experiment types:
 - Massive (Phase 5): Large-scale training with all data
 
 Usage:
-    python scripts/train_h3_model.py --config simple_h3_experiment
-    python scripts/train_h3_model.py --config comprehensive_h3_experiment  
-    python scripts/train_h3_model.py --config massive_h3_experiment
+    python scripts/train_h3_model.py --config experiment_h3_simple
+    python scripts/train_h3_model.py --config experiment_h3_comprehensive  
+    python scripts/train_h3_model.py --config experiment_h3_massive
 """
 
 import argparse
@@ -30,6 +30,7 @@ warnings.filterwarnings('ignore')
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 # ML imports
+from src.data.loader import AISDataLoader
 import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -110,6 +111,30 @@ def load_config(config_name):
         return result
     
     return load_config_recursive(config_path)
+
+def load_training_data(config):
+    """Load training data using the AISDataLoader."""
+    print("\n📊 Loading training data...")
+    data_path = config['data']['training_data_path']
+    
+    if not Path(data_path).exists():
+        raise FileNotFoundError(f"Training data not found: {data_path}")
+        
+    # The loader needs the 'data' directory, which is the parent of 'processed'
+    data_dir = str(Path(data_path).parent.parent)
+    use_duckdb = config.get('duckdb', {}).get('enabled', True)
+    loader = AISDataLoader(data_dir=data_dir, use_duckdb=use_duckdb)
+    
+    # The filename for the processed data
+    file_name = Path(data_path).name
+    
+    print(f"   🔄 Using {'DuckDB' if use_duckdb else 'pandas'} backend to load {file_name}")
+    
+    # Load the processed data using the loader
+    df = loader.load_processed_data(file_name)
+    
+    print(f"   ✅ Loaded {len(df):,} training examples")
+    return df
 
 def prepare_features(df, config):
     """Prepare features according to configuration."""
@@ -352,14 +377,7 @@ def train_h3_predictor(config_name):
     print(f"   📋 Phase: {config['experiment']['phase']}")
     
     # Load training data
-    print(f"\n📊 Loading training data...")
-    data_path = config['data']['training_data_path']
-    
-    if not Path(data_path).exists():
-        raise FileNotFoundError(f"Training data not found: {data_path}")
-    
-    df = pd.read_pickle(data_path)
-    print(f"   ✅ Loaded {len(df):,} training examples")
+    df = load_training_data(config)
     
     # Prepare features and target
     X, y = prepare_features(df, config)
@@ -439,7 +457,7 @@ def main():
     """Command line interface."""
     parser = argparse.ArgumentParser(description='Train H3 prediction model with configuration')
     parser.add_argument('--config', 
-                        help='Configuration name (e.g., simple_h3_experiment)')
+                        help='Configuration name (e.g., experiment_h3_simple)')
     parser.add_argument('--list-configs', action='store_true',
                         help='List available configurations')
     

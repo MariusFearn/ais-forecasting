@@ -2,7 +2,7 @@
 # Phase 1: Basic RandomForest with 6 features
 
 defaults:
-  - base_h3_experiment
+  - experiment_h3_base
 
 experiment:
   name: "simple_h3_prediction"

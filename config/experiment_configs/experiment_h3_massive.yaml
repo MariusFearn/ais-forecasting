@@ -2,7 +2,7 @@
 # Phase 5: Large-scale training with all available data and features
 
 defaults:
-  - base_h3_experiment
+  - experiment_h3_base
 
 experiment:
   name: "massive_h3_prediction"

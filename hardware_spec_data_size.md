@@ -190,7 +190,7 @@ This hardware setup is **excellent for machine learning** and can easily handle 
 ./scripts/setup_optimized_environment.sh
 
 # Then run any training with GPU acceleration:
-python scripts/train_h3_model.py --config comprehensive_h3_experiment
+python scripts/train_h3_model.py --config experiment_h3_comprehensive
 ```
 
 ### **Expected Performance Improvements**

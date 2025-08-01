@@ -45,7 +45,7 @@ class UnifiedTestSystem:
         print("=" * 60)
         
         if self.test_type == 'infrastructure':
-            return self._run_infrastructure_tests()
+            return self._run_test_infrastructure()
         elif self.test_type == 'feature_extraction':
             return self._run_feature_tests()
         elif self.test_type == 'model_performance':
@@ -57,7 +57,7 @@ class UnifiedTestSystem:
         else:
             raise ValueError(f"Unknown test type: {self.test_type}")
     
-    def _run_infrastructure_tests(self) -> Dict[str, Any]:
+    def _run_test_infrastructure(self) -> Dict[str, Any]:
         """Test data preprocessing and pipeline infrastructure."""
         print("🧪 Testing Infrastructure Components...")
         
@@ -349,7 +349,13 @@ class UnifiedTestSystem:
             
             try:
                 if test_type == 'infrastructure':
-                    result = self._run_infrastructure_tests()
+                    return self._run_test_infrastructure()
+</match>
+<match path="/home/marius/repo_linux/ais-forecasting/scripts/test_system.py" line=60>
+    def _run_test_infrastructure(self) -> Dict[str, Any]:
+</match>
+<match path="/home/marius/repo_linux/ais-forecasting/scripts/test_system.py" line=352>
+                    result = self._run_test_infrastructure()
                 elif test_type == 'feature_extraction':
                     result = self._run_feature_tests()
                 elif test_type == 'model_performance':

@@ -36,5 +36,5 @@ print(f'   💻 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 
 echo "🎯 Ready for maximum performance ML training!"
 echo ""
 echo "Usage examples:"
-echo "  python scripts/train_h3_model.py --config comprehensive_h3_experiment"
-echo "  python scripts/create_training_data.py --config massive_data_creation"
+echo "  python scripts/train_h3_model.py --config experiment_h3_comprehensive"
+echo "  python scripts/create_training_data.py --config creation_data_massive"

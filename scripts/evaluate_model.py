@@ -47,13 +47,13 @@ class UnifiedModelEvaluator:
         print("=" * 60)
         
         if self.eval_type == 'simple':
-            return self._simple_evaluation()
+            return self._run_evaluation_simple()
         elif self.eval_type == 'comprehensive':
-            return self._comprehensive_evaluation()
+            return self._run_evaluation_comprehensive()
         elif self.eval_type == 'production':
-            return self._production_evaluation()
+            return self._run_evaluation_production()
         elif self.eval_type == 'comparative':
-            return self._comparative_evaluation()
+            return self._run_evaluation_comparative()
         else:
             raise ValueError(f"Unknown evaluation type: {self.eval_type}")
     
@@ -129,7 +129,7 @@ class UnifiedModelEvaluator:
         
         return X_test, y_test, test_data[test_mask]
     
-    def _simple_evaluation(self) -> Dict[str, Any]:
+    def _run_evaluation_simple(self) -> Dict[str, Any]:
         """Basic model evaluation with core metrics."""
         print("📈 Running Simple Evaluation...")
         
@@ -169,7 +169,7 @@ class UnifiedModelEvaluator:
             print(f"❌ Simple evaluation failed: {e}")
             return {'status': 'failed', 'error': str(e)}
     
-    def _comprehensive_evaluation(self) -> Dict[str, Any]:
+    def _run_evaluation_comprehensive(self) -> Dict[str, Any]:
         """Detailed evaluation with visualizations and analysis."""
         print("🔍 Running Comprehensive Evaluation...")
         

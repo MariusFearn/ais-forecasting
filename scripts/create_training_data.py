@@ -8,9 +8,9 @@ Configurable data creation script that can handle all data generation scenarios:
 - Massive (Phase 5): All data, maximum scale
 
 Usage:
-    python scripts/create_training_data.py --config simple_data_creation
-    python scripts/create_training_data.py --config comprehensive_data_creation  
-    python scripts/create_training_data.py --config massive_data_creation
+    python scripts/create_training_data.py --config creation_data_simple
+    python scripts/create_training_data.py --config creation_data_comprehensive  
+    python scripts/create_training_data.py --config creation_data_massive
 """
 
 import argparse
@@ -21,6 +21,7 @@ import pandas as pd
 import numpy as np
 import yaml
 from datetime import datetime
+import re
 from tqdm import tqdm
 
 # Suppress warnings
@@ -29,6 +30,7 @@ warnings.filterwarnings('ignore')
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
+from data.loader import AISDataLoader
 from features.vessel_h3_tracker import VesselH3Tracker
 from features.vessel_features import VesselFeatureExtractor
 
@@ -99,53 +101,49 @@ def load_config(config_name):
     return load_config_recursive(config_path)
 
 def load_and_combine_data(config):
-    """Load and combine data files according to configuration."""
+    """Load and combine data files according to configuration using AISDataLoader."""
     print("📊 Loading AIS data...")
+
+    data_source_config = config['data_source']
+    data_files = data_source_config.get('data_files', [])
     
-    data_files = config['data_source']['data_files']
-    all_data = []
+    if not data_files:
+        raise ValueError("Configuration missing 'data_files' under 'data_source'.")
+
+    # Extract years from file paths, e.g., 'data/raw/ais_cape_data_2023.pkl' -> '2023'
+    # This regex is safer and handles different path formats.
+    years = sorted(list(set(re.findall(r'(\d{4})', " ".join(data_files)))))
     
-    # Use progress bar for multiple files
-    if len(data_files) > 1:
-        file_iterator = tqdm(data_files, desc="Loading data files")
-    else:
-        file_iterator = data_files
+    if not years:
+        raise ValueError("Could not extract any years from the data file paths. Ensure they follow a format like 'ais_cape_data_YYYY.pkl'.")
+
+    # Initialize the loader
+    # The 'data' directory is the parent of 'raw' and 'processed'
+    data_dir = str(Path(data_files[0]).resolve().parent.parent)
+    use_duckdb = config.get('duckdb', {}).get('enabled', True)
+    loader = AISDataLoader(data_dir=data_dir, use_duckdb=use_duckdb)
+
+    print(f"   🔄 Using {'DuckDB' if use_duckdb else 'pandas'} backend for years: {', '.join(years)}")
     
-    for file_path in file_iterator:
-        try:
-            if not Path(file_path).exists():
-                print(f"   ⚠️  Skipping missing file: {file_path}")
-                continue
-                
-            df = pd.read_pickle(file_path)
-            
-            # Add data year if configured
-            if config.get('processing', {}).get('include_data_year', False):
-                year = Path(file_path).stem.split('_')[-1]
-                df['data_year'] = int(year)
-            
-            all_data.append(df)
-            print(f"   ✅ {Path(file_path).name}: {len(df):,} records")
-            
-        except Exception as e:
-            print(f"   ❌ Failed to load {file_path}: {e}")
-            continue
-    
-    if not all_data:
-        raise ValueError("No data files loaded successfully!")
-    
-    # Combine all data
-    if len(all_data) > 1:
-        print("🔗 Combining data files...")
-        combined_df = pd.concat(all_data, ignore_index=True)
-        
-        # Sort by timestamp if configured
-        if config.get('processing', {}).get('sort_by_timestamp', False):
-            print("   📅 Sorting by timestamp...")
-            combined_df = combined_df.sort_values('mdt').reset_index(drop=True)
-    else:
-        combined_df = all_data[0]
-    
+    # Load data using the optimized loader
+    # Pass down any filters if they exist in the config
+    filters = data_source_config.get('filters')
+    combined_df = loader.load_multi_year_data_optimized(years, filters=filters)
+
+    # The new loader already handles combining and can apply filters.
+    # Sorting by timestamp can be done here if needed.
+    if config.get('processing', {}).get('sort_by_timestamp', False):
+        print("   📅 Sorting by timestamp...")
+        combined_df = combined_df.sort_values('mdt').reset_index(drop=True)
+
+    # Add data year if configured. This is more robust than using filenames.
+    if config.get('processing', {}).get('include_data_year', False):
+        print("   📅 Adding data_year from 'mdt' timestamp...")
+        # Ensure 'mdt' is datetime
+        if not np.issubdtype(combined_df['mdt'].dtype, np.datetime64):
+             combined_df['mdt'] = pd.to_datetime(combined_df['mdt'])
+        combined_df['data_year'] = combined_df['mdt'].dt.year
+
     print(f"   ✅ Total combined records: {len(combined_df):,}")
     return combined_df
 
@@ -439,7 +437,7 @@ def main():
     """Command line interface."""
     parser = argparse.ArgumentParser(description='Create training data with configuration')
     parser.add_argument('--config', 
-                        help='Configuration name (e.g., simple_data_creation)')
+                        help='Configuration name (e.g., creation_data_simple)')
     parser.add_argument('--list-configs', action='store_true',
                         help='List available data creation configurations')
     

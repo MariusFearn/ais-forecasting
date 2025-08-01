@@ -5,7 +5,7 @@ defaults:
   - ../default
 
 experiment:
-  name: "massive_data_creation"
+  name: "creation_data_massive"
   description: "Phase 5: Massive scale with all available data"
   phase: 5
 

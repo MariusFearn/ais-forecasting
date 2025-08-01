@@ -1,9 +1,24 @@
 # AIS Vessel Trajectory Prediction - Quick Reference
 
+## 🎯 Development Workflow (The Golden Path)
+When adding a new feature, the standard process is:
+1.  **Add Core Logic:** Place new reusable functions and classes in the appropriate module within the `src/` directory.
+2.  **Create or Update Config:** If the feature requires new parameters, add them to `config/default.yaml` or create a new experiment-specific YAML file in `config/experiment_configs/`.
+3.  **Update Scripts:** Modify existing scripts in `scripts/` to use the new logic and configurations. Create new scripts only when introducing a completely new, high-level task.
+4.  **Add Tests:** Create corresponding unit or integration tests in the `tests/` directory to validate the new feature.
+5.  **Update Documentation:** Document the new feature in the main `README.md` and any other relevant files.
 
+## ✍️ Coding Style and Conventions
+- **File Paths:** Always use `pathlib.Path` for handling file and directory paths to ensure cross-platform compatibility.
+- **Logging:** Use the `logging` module for all output in scripts and source code. Avoid using `print()` for logging purposes.
+- **Code Formatting:** Adhere to PEP 8 standards for all Python code to maintain consistency and readability.
+- **Type Hinting:** Use type hints for all function signatures to improve code clarity and allow for static analysis.
 
+## 📦 Dependency Management
+- **Pinning Dependencies:** When adding or updating a library in `requirements.txt`, pin it to the exact version (e.g., `pandas==2.3.0`). This ensures that the environment is 100% reproducible.
+- **Updating `requirements.txt`:** Use a tool like `pip-tools` to manage dependencies. After installing a new package (`pip install new-package`), run `pip freeze > requirements.txt` to capture the exact versions of all packages in the environment.
 
-```
+---
 
 ## 📁 Project sturckture - we do not change this strukture - keep attention if you create new files to put them in the right place
 ais-forecasting/
@@ -12,11 +27,12 @@ ais-forecasting/
 ├── config/                     # Stores all project configuration files.
 │   ├── default.yaml            # Default parameters for the entire project.
 │   └── experiment_configs/     # Configurations for specific machine learning experiments.
-│       ├── nbeats_experiment.yaml # Settings for an N-BEATS model experiment.
-│       └── tft_experiment.yaml    # Settings for a Temporal Fusion Transformer experiment.
+│       ├── experiment_nbeats.yaml # Settings for an N-BEATS model experiment.
+│       └── experiment_tft.yaml    # Settings for a Temporal Fusion Transformer experiment.
 │
 ├── data/                       # Holds all data used in the project.
-│   ├── raw/                    # Raw, immutable data. Should not be modified.
+│   ├── raw/                    # Raw, immutable data. Original data files (.pkl) are stored here.
+│   │   └── parquet/            # Parquet versions of raw data for optimized access.
 │   ├── processed/              # Cleaned, transformed, and feature-engineered data.
 │   │   ├── training_sets/      # Final datasets ready for model training.
 │   │   ├── vessel_features/    # Intermediate features extracted for each vessel.
