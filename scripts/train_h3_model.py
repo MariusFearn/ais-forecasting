@@ -198,15 +198,31 @@ def select_features(X, y, config):
     return pd.DataFrame(X_selected, columns=selected_features, index=X.index), selected_features
 
 def create_model(config):
-    """Create model based on configuration."""
+    """Create model based on configuration with GPU acceleration."""
     model_type = config['model']['type']
-    params = config['model']['parameters']
+    params = config['model']['parameters'].copy()
     
+    # Apply GPU and hardware optimizations from config ONLY for XGBoost
+    if model_type == 'xgboost' and 'model' in config:
+        # Add GPU settings if available for XGBoost (modern XGBoost uses 'device' instead of 'gpu_id')
+        gpu_settings = ['tree_method', 'device', 'max_bin']
+        for setting in gpu_settings:
+            if setting in config['model']:
+                params[setting] = config['model'][setting]
+                
+    # Apply hardware settings for both model types
+    if config.get('hardware', {}).get('cpu', {}).get('threads'):
+        params['n_jobs'] = config['hardware']['cpu']['threads']
+        
     if model_type == 'xgboost':
         print(f"   🚀 Creating XGBoost Classifier...")
+        if params.get('tree_method') == 'gpu_hist':
+            print(f"   🔥 GPU acceleration enabled! Device: {params.get('device', 'cuda')}")
+        print(f"   💻 Using {params.get('n_jobs', 1)} CPU threads")
         return xgb.XGBClassifier(**params)
     else:
         print(f"   🌲 Creating RandomForest Classifier...")
+        print(f"   💻 Using {params.get('n_jobs', 1)} CPU threads")
         return RandomForestClassifier(**params)
 
 def evaluate_model(model, X_test, y_test, h3_encoder, config):

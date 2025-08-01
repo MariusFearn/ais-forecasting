@@ -26,19 +26,19 @@ ais-forecasting/
 │       ├── checkpoints/        # Saved states during large model training.
 │       └── hyperparameter_logs/# Logs from hyperparameter optimization runs.
 │
-├── experiments/                # Tracks results and artifacts from ML experiments.
+├── experiments/                # Tracks results and artifacts from ML experiments. (holds variables and setting for experiments)
 │   ├── baseline_experiments/   # Results from simple baseline models.
 │   ├── nbeats_experiments/     # Results from N-BEATS model experiments.
 │   └── tft_experiments/        # Results from TFT model experiments.
 │
-├── notebooks/                  # Jupyter notebooks for interactive analysis and visualization.
+├── notebooks/                  # Jupyter notebooks for interactive analysis and visualization. (data analysis, research, presentations)
 │   ├── exploratory.ipynb       # Initial data exploration and analysis.
 │   ├── preprocessing.ipynb     # Interactive data cleaning and preparation.
 │   ├── model_development.ipynb # Prototyping and developing new models.
 │   ├── evaluation.ipynb        # In-depth evaluation of model performance.
 │   └── visual_training_analysis.ipynb # Visualizing the full training pipeline.
 │
-├── scripts/                    # Contains standalone, executable scripts for core tasks. (should not containe functions, use src for functions)
+├── scripts/                    # Contains standalone, executable scripts for core tasks. (should not containe functions, use src for functions - should try not have code duplication)
 │   ├── create_simple_training_data.py # Generates a small, single-vessel dataset.
 │   ├── train_simple_model.py   # Trains a baseline model on the simple dataset.
 │   ├── create_multi_vessel_training_data.py # Generates the full training dataset.
@@ -50,7 +50,7 @@ ais-forecasting/
 │   ├── train.py                # Delete: Redundant, functionality is split.
 │   └── quick_start_h3.py       # Delete: Old script, functionality now in notebooks.
 │
-├── src/                        # Contains all the project's source code as a Python package.
+├── src/                        # Contains all the project's source code as a Python package. (all code and functions goes here - script gets data and runs functions from src)
 │   ├── __init__.py             # Makes 'src' a package, allowing imports.
 │   ├── data/                   # Modules for data loading and preprocessing.
 │   ├── features/               # Modules for feature engineering and transformation.

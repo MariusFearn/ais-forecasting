@@ -10,6 +10,14 @@ data:
 training:
   apply_phase5_fixes: true
   handle_single_sample_classes: true
+  # Hardware optimization settings
+  n_jobs: 14                      # Use all CPU threads
+  
+# XGBoost GPU acceleration settings (modern syntax)
+model:
+  tree_method: "hist"             # Use histogram method (modern)
+  device: "cuda:0"                # Use RTX 3080 Ti GPU acceleration
+  max_bin: 512                    # Optimize for GPU memory
 
 feature_selection:
   method: "mutual_info_classif"

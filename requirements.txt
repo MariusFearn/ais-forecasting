@@ -3,7 +3,13 @@ torch>=2.7.0
 numpy>=2.0.0
 pandas>=2.3.0
 scikit-learn>=1.7.0
+
+# XGBoost with GPU support
+# Note: Use pip install directly for GPU support:
+# pip install xgboost[gpu] --extra-index-url https://pypi.nvidia.com
+# Or for conda: conda install -c conda-forge xgboost-gpu
 xgboost>=2.1.0
+
 scipy>=1.15.0
 
 # Geospatial libraries (CRITICAL for AIS project)

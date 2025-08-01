@@ -240,14 +240,16 @@ class TrainingPipeline:
     def train_xgboost_model(self, 
                            model_params: Optional[Dict] = None,
                            feature_selection: bool = True,
-                           max_features: int = 25) -> xgb.XGBClassifier:
+                           max_features: int = 25,
+                           config: Optional[Dict] = None) -> xgb.XGBClassifier:
         """
-        Train XGBoost classifier with feature selection.
+        Train XGBoost classifier with feature selection and GPU acceleration.
         
         Args:
             model_params: XGBoost parameters
             feature_selection: Whether to perform feature selection
             max_features: Maximum number of features to select
+            config: Configuration dictionary with GPU and hardware settings
             
         Returns:
             Trained XGBoost model
@@ -269,6 +271,29 @@ class TrainingPipeline:
             'n_jobs': -1,
             'eval_metric': 'mlogloss'
         }
+        
+        # Apply hardware optimization from config
+        if config:
+            # GPU settings from config
+            if config.get('model', {}).get('tree_method'):
+                default_params['tree_method'] = config['model']['tree_method']
+                if self.verbose:
+                    print(f"   🚀 GPU acceleration enabled: {config['model']['tree_method']}")
+                    
+            if config.get('model', {}).get('gpu_id') is not None:
+                default_params['gpu_id'] = config['model']['gpu_id']
+                
+            if config.get('model', {}).get('max_bin'):
+                default_params['max_bin'] = config['model']['max_bin']
+                
+            if config.get('model', {}).get('device'):
+                default_params['device'] = config['model']['device']
+            
+            # CPU threads from config
+            if config.get('hardware', {}).get('cpu', {}).get('threads'):
+                default_params['n_jobs'] = config['hardware']['cpu']['threads']
+                if self.verbose:
+                    print(f"   💻 Using {config['hardware']['cpu']['threads']} CPU threads")
         
         if model_params:
             default_params.update(model_params)
@@ -440,7 +465,8 @@ class TrainingPipeline:
                               target_column: str = 'target_h3_cell',
                               test_size: float = 0.2,
                               feature_selection: bool = True,
-                              max_features: int = 25) -> Dict[str, Any]:
+                              max_features: int = 25,
+                              config: Optional[Dict] = None) -> Dict[str, Any]:
         """
         Complete training pipeline from data loading to model saving.
         
@@ -472,7 +498,7 @@ class TrainingPipeline:
         self.split_data(X, y_encoded, test_size=test_size)
         
         # Step 5: Train model
-        self.train_xgboost_model(feature_selection=feature_selection, max_features=max_features)
+        self.train_xgboost_model(feature_selection=feature_selection, max_features=max_features, config=config)
         
         # Step 6: Evaluate model
         evaluation = self.evaluate_model()

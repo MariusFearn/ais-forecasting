@@ -4,3 +4,22 @@ paths:
   raw_data: "data/raw"
   experiments: "experiments"
   evaluation_results: "experiments/evaluation_results"
+
+# Hardware optimization settings
+hardware:
+  cpu:
+    threads: 14                    # Intel i7-12700K (14 threads)
+    use_all_cores: true
+  gpu:
+    enabled: true                  # RTX 3080 Ti available
+    device_id: 0
+    memory_gb: 12                  # 12 GB VRAM
+  memory:
+    total_gb: 54                   # 54 GB RAM available
+    chunk_size: 100000             # Optimal chunk size for processing
+
+# Environment variables for optimal performance
+environment:
+  OMP_NUM_THREADS: 14
+  MKL_NUM_THREADS: 14
+  CUDA_VISIBLE_DEVICES: "0"
