@@ -1,0 +1,38 @@
+# Configuration for the shipping lane discovery pipeline
+# Inherits from default.yaml for base paths
+
+defaults:
+  - default
+
+# Phase 1: Trajectory & Terminal Extraction
+trajectory:
+  time_gap_threshold_hours: 24
+  min_journey_length: 10 # Minimum number of AIS pings to be a valid journey
+  output_path: "data/processed/journeys.parquet"
+
+h3_resolution: 5 # H3 resolution for geospatial indexing
+
+terminals:
+  # DBSCAN parameters for clustering start/end points
+  # Epsilon is in degrees. ~10km at the equator is ~0.1 degrees.
+  eps: 0.1
+  min_samples: 5
+  output_path: "data/processed/terminals.gpkg"
+
+# Phase 2: Route Clustering
+routes:
+  # DBSCAN parameters for clustering routes based on DTW distance
+  # Epsilon is a unitless distance from DTW. Requires tuning.
+  eps: 2.0
+  min_samples: 3
+  output_path: "data/processed/clustered_journeys.parquet"
+
+# Phase 3: Route Graph Construction
+graph:
+  output_path: "data/processed/route_graph.gpkg"
+
+# Phase 4: Validation & Visualization
+visualization:
+  map_output_path: "visualizations/shipping_lanes.html"
+  map_start_location: [0, 0] # Lat, Lon
+  map_zoom_start: 2

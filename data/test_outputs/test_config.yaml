@@ -1,0 +1,23 @@
+data:
+  raw_data_dir: /home/marius/repo_linux/ais-forecasting/data
+graph:
+  output_path: /home/marius/repo_linux/ais-forecasting/data/test_outputs/test_route_graph.gpkg
+h3_resolution: 5
+routes:
+  eps: 2.0
+  min_samples: 2
+  output_path: /home/marius/repo_linux/ais-forecasting/data/test_outputs/test_clustered_journeys.parquet
+terminals:
+  eps: 0.1
+  min_samples: 3
+  output_path: /home/marius/repo_linux/ais-forecasting/data/test_outputs/test_terminals.gpkg
+trajectory:
+  min_journey_length: 5
+  output_path: /home/marius/repo_linux/ais-forecasting/data/test_outputs/test_journeys.parquet
+  time_gap_threshold_hours: 24
+visualization:
+  map_output_path: /home/marius/repo_linux/ais-forecasting/visualizations/test_shipping_lanes.html
+  map_start_location:
+  - -33.9
+  - 18.4
+  map_zoom_start: 8
