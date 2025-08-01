@@ -20,29 +20,43 @@ def load_vessel_data(mmsi: str, data_loader: AISDataLoader) -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: DataFrame with vessel's AIS data, sorted by timestamp.
-    """
-    try:
-        # Use DuckDB engine for efficient single vessel loading
-        query = f"""
-        SELECT mmsi, timestamp, lat, lon, sog, cog
-        FROM ais_data 
-        WHERE mmsi = '{mmsi}'
-        ORDER BY timestamp ASC
-        """
         
+    Raises:
+        ValueError: If mmsi is invalid or no data found.
+        RuntimeError: If data loading fails due to system issues.
+    """
+    if not mmsi or pd.isna(mmsi):
+        raise ValueError(f"Invalid MMSI provided: {mmsi}")
+    
+    try:
         if data_loader.use_duckdb:
-            df = data_loader.duckdb_engine.execute_query(query)
+            # Use parameterized query to prevent SQL injection
+            query = """
+            SELECT mmsi, timestamp, lat, lon, sog, cog
+            FROM ais_data 
+            WHERE mmsi = ?
+            ORDER BY timestamp ASC
+            """
+            df = data_loader.duckdb_engine.execute_query(query, params=[mmsi])
         else:
             # Fallback to pandas loading if DuckDB not available
             df = data_loader.load_raw_data()
+            if df.empty:
+                raise RuntimeError("No raw data available")
             df = df[df['mmsi'] == mmsi].sort_values('timestamp')
         
+        if df.empty:
+            logging.warning(f"No data found for vessel {mmsi}")
+            return pd.DataFrame()
+            
         logging.info(f"Loaded {len(df)} records for vessel {mmsi}")
         return df
         
+    except (ValueError, RuntimeError):
+        raise  # Re-raise our custom exceptions
     except Exception as e:
-        logging.error(f"Error loading data for vessel {mmsi}: {e}")
-        return pd.DataFrame()
+        logging.error(f"Unexpected error loading data for vessel {mmsi}: {e}")
+        raise RuntimeError(f"Failed to load vessel data: {e}") from e
 
 def segment_into_journeys(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     """
@@ -127,6 +141,48 @@ def journeys_to_h3_sequences(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     logging.info(f"Created {len(result_df)} H3 journey sequences")
     return result_df
 
+def _get_unique_vessels(data_loader: AISDataLoader) -> List[str]:
+    """Get list of unique vessel identifiers from the data."""
+    try:
+        if data_loader.use_duckdb:
+            mmsi_query = "SELECT DISTINCT mmsi FROM ais_data LIMIT 10000"  # Add limit for safety
+            mmsi_df = data_loader.duckdb_engine.execute_query(mmsi_query)
+            unique_vessels = mmsi_df['mmsi'].dropna().astype(str).tolist()
+        else:
+            # Fallback method
+            all_data = data_loader.load_raw_data()
+            if all_data.empty:
+                raise RuntimeError("No raw data available")
+            unique_vessels = all_data['mmsi'].dropna().astype(str).unique().tolist()
+        
+        logging.info(f"Found {len(unique_vessels)} unique vessels to process")
+        return unique_vessels
+        
+    except Exception as e:
+        logging.error(f"Error getting vessel list: {e}")
+        raise RuntimeError(f"Failed to retrieve vessel list: {e}") from e
+
+def _process_single_vessel(mmsi: str, data_loader: AISDataLoader, config: dict) -> pd.DataFrame:
+    """Process a single vessel and return its journey sequences."""
+    try:
+        # Load vessel data
+        vessel_df = load_vessel_data(mmsi, data_loader)
+        if vessel_df.empty:
+            return pd.DataFrame()
+        
+        # Segment into journeys
+        segmented_df = segment_into_journeys(vessel_df, config['trajectory'])
+        if segmented_df.empty:
+            return pd.DataFrame()
+        
+        # Convert to H3 sequences
+        journey_sequences = journeys_to_h3_sequences(segmented_df, config)
+        return journey_sequences
+        
+    except Exception as e:
+        logging.warning(f"Failed to process vessel {mmsi}: {e}")
+        return pd.DataFrame()
+
 def process_all_vessels(config: dict) -> pd.DataFrame:
     """
     Main function to process all vessels and save journeys to a Parquet file.
@@ -136,63 +192,45 @@ def process_all_vessels(config: dict) -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: DataFrame of all journey sequences.
+        
+    Raises:
+        RuntimeError: If vessel processing fails completely.
     """
     # Initialize data loader
     data_dir = config['data']['raw_data_dir']
     data_loader = AISDataLoader(data_dir, use_duckdb=True)
     
     # Get list of all unique vessels
-    try:
-        if data_loader.use_duckdb:
-            mmsi_query = "SELECT DISTINCT mmsi FROM ais_data"
-            mmsi_df = data_loader.duckdb_engine.execute_query(mmsi_query)
-            unique_vessels = mmsi_df['mmsi'].tolist()
-        else:
-            # Fallback method
-            all_data = data_loader.load_raw_data()
-            unique_vessels = all_data['mmsi'].unique().tolist()
-        
-        logging.info(f"Found {len(unique_vessels)} unique vessels to process")
-        
-    except Exception as e:
-        logging.error(f"Error getting vessel list: {e}")
-        return pd.DataFrame()
+    unique_vessels = _get_unique_vessels(data_loader)
     
-    # Process each vessel
+    # Process each vessel with progress tracking
     all_journeys = []
+    failed_vessels = 0
+    
     for i, mmsi in enumerate(unique_vessels):
         if i % 100 == 0:
             logging.info(f"Processing vessel {i+1}/{len(unique_vessels)}: {mmsi}")
         
-        # Load vessel data
-        vessel_df = load_vessel_data(mmsi, data_loader)
-        if vessel_df.empty:
-            continue
-        
-        # Segment into journeys
-        segmented_df = segment_into_journeys(vessel_df, config['trajectory'])
-        if segmented_df.empty:
-            continue
-        
-        # Convert to H3 sequences
-        journey_sequences = journeys_to_h3_sequences(segmented_df, config)
+        journey_sequences = _process_single_vessel(mmsi, data_loader, config)
         if not journey_sequences.empty:
             all_journeys.append(journey_sequences)
+        else:
+            failed_vessels += 1
     
     # Combine all results
-    if all_journeys:
-        final_df = pd.concat(all_journeys, ignore_index=True)
+    if not all_journeys:
+        raise RuntimeError(f"No valid journeys found from {len(unique_vessels)} vessels")
         
-        # Save to output file
-        output_path = Path(config['trajectory']['output_path'])
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        final_df.to_parquet(output_path, index=False)
-        
-        logging.info(f"Saved {len(final_df)} journey sequences to {output_path}")
-        return final_df
-    else:
-        logging.warning("No valid journeys found")
-        return pd.DataFrame()
+    final_df = pd.concat(all_journeys, ignore_index=True)
+    logging.info(f"Successfully processed {len(all_journeys)} vessels, {failed_vessels} failed")
+    
+    # Save to output file
+    output_path = Path(config['trajectory']['output_path'])
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    final_df.to_parquet(output_path, index=False)
+    logging.info(f"Saved {len(final_df)} journey sequences to {output_path}")
+    
+    return final_df
 
 def calculate_route_centroids(clustered_journeys: pd.DataFrame) -> pd.DataFrame:
     """

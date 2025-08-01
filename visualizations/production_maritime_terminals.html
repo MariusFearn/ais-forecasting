@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_07c1adaa0f3aaa1fd2cc8c77f7893659 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+        <h3 align="center" style="font-size:20px"><b>Maritime Terminals Discovery - Cape Town Region</b></h3>
+        
+    
+            <div class="folium-map" id="map_07c1adaa0f3aaa1fd2cc8c77f7893659" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_07c1adaa0f3aaa1fd2cc8c77f7893659 = L.map(
+                "map_07c1adaa0f3aaa1fd2cc8c77f7893659",
+                {
+                    center: [-33.9, 18.4],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 8,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_f0edb9bfe7a4757ea8def518aed49bb0 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_f0edb9bfe7a4757ea8def518aed49bb0.addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+            var circle_marker_870512fa54a74e67a9a1da6dc0d80b54 = L.circleMarker(
+                [-33.27382213591347, 16.103834383372426],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_861a3318171305219b2a72f3ec2be784 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_75f6b8e8c2a0ecdf81de7790827ab1ca = $(`<div id="html_75f6b8e8c2a0ecdf81de7790827ab1ca" style="width: 100.0%; height: 100.0%;">             <b>Terminal 0</b><br>             Visits: 2558<br>             Vessels: 960<br>             Location: (-33.274, 16.104)             </div>`)[0];
+                popup_861a3318171305219b2a72f3ec2be784.setContent(html_75f6b8e8c2a0ecdf81de7790827ab1ca);
+            
+        
+
+        circle_marker_870512fa54a74e67a9a1da6dc0d80b54.bindPopup(popup_861a3318171305219b2a72f3ec2be784)
+        ;
+
+        
+    
+    
+            var circle_marker_24dc9dbb779283ab3e4a8397e4bffdd1 = L.circleMarker(
+                [-34.967445714673616, 19.472385746280004],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_922854cc1e30057c7ec7f0ae722f31e4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6f218f932c16a788a6cbda2585c8c400 = $(`<div id="html_6f218f932c16a788a6cbda2585c8c400" style="width: 100.0%; height: 100.0%;">             <b>Terminal 1</b><br>             Visits: 3069<br>             Vessels: 1054<br>             Location: (-34.967, 19.472)             </div>`)[0];
+                popup_922854cc1e30057c7ec7f0ae722f31e4.setContent(html_6f218f932c16a788a6cbda2585c8c400);
+            
+        
+
+        circle_marker_24dc9dbb779283ab3e4a8397e4bffdd1.bindPopup(popup_922854cc1e30057c7ec7f0ae722f31e4)
+        ;
+
+        
+    
+    
+            var circle_marker_0cf56415dcd753a9d60c800bd3877c0a = L.circleMarker(
+                [-32.076015014925375, 16.90205221393035],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_4659f4e958e63ed184b313bfeef8b707 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_06e0bec1cfbba8449d7e5e69f84001f8 = $(`<div id="html_06e0bec1cfbba8449d7e5e69f84001f8" style="width: 100.0%; height: 100.0%;">             <b>Terminal 2</b><br>             Visits: 67<br>             Vessels: 56<br>             Location: (-32.076, 16.902)             </div>`)[0];
+                popup_4659f4e958e63ed184b313bfeef8b707.setContent(html_06e0bec1cfbba8449d7e5e69f84001f8);
+            
+        
+
+        circle_marker_0cf56415dcd753a9d60c800bd3877c0a.bindPopup(popup_4659f4e958e63ed184b313bfeef8b707)
+        ;
+
+        
+    
+    
+            var circle_marker_4156841a29815998b686277293d629a8 = L.circleMarker(
+                [-32.62232324587459, 18.04747773267327],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_0f4e63a6c55639f536b4ab224a48ce43 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_70885d99586047d25c3754d175621d88 = $(`<div id="html_70885d99586047d25c3754d175621d88" style="width: 100.0%; height: 100.0%;">             <b>Terminal 3</b><br>             Visits: 202<br>             Vessels: 115<br>             Location: (-32.622, 18.047)             </div>`)[0];
+                popup_0f4e63a6c55639f536b4ab224a48ce43.setContent(html_70885d99586047d25c3754d175621d88);
+            
+        
+
+        circle_marker_4156841a29815998b686277293d629a8.bindPopup(popup_0f4e63a6c55639f536b4ab224a48ce43)
+        ;
+
+        
+    
+    
+            var circle_marker_875bad72926ae96521aaf063b3acfe85 = L.circleMarker(
+                [-33.05693480092592, 17.94818342592593],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_74a6befb566b46a79f3a78218195e16e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_82be0d245943e451d7e2c84b6d1597cd = $(`<div id="html_82be0d245943e451d7e2c84b6d1597cd" style="width: 100.0%; height: 100.0%;">             <b>Terminal 4</b><br>             Visits: 288<br>             Vessels: 152<br>             Location: (-33.057, 17.948)             </div>`)[0];
+                popup_74a6befb566b46a79f3a78218195e16e.setContent(html_82be0d245943e451d7e2c84b6d1597cd);
+            
+        
+
+        circle_marker_875bad72926ae96521aaf063b3acfe85.bindPopup(popup_74a6befb566b46a79f3a78218195e16e)
+        ;
+
+        
+    
+    
+            var circle_marker_7d3accd75840d6b6b7e44c8ab867b363 = L.circleMarker(
+                [-32.05050680000001, 17.225027],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_46340411769b08f165f3000390ee9ea6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6c298c9074d48abca8022e645b5d609e = $(`<div id="html_6c298c9074d48abca8022e645b5d609e" style="width: 100.0%; height: 100.0%;">             <b>Terminal 5</b><br>             Visits: 5<br>             Vessels: 5<br>             Location: (-32.051, 17.225)             </div>`)[0];
+                popup_46340411769b08f165f3000390ee9ea6.setContent(html_6c298c9074d48abca8022e645b5d609e);
+            
+        
+
+        circle_marker_7d3accd75840d6b6b7e44c8ab867b363.bindPopup(popup_46340411769b08f165f3000390ee9ea6)
+        ;
+
+        
+    
+    
+            var circle_marker_cc5f77f6dc07f1337d6e5c147b046bc9 = L.circleMarker(
+                [-32.072663631205664, 16.584753496453907],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_482d8da1781d4fe5e1c74128a25f1d7e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_593cb2e8fcf49f6f7a1a08366c228cdf = $(`<div id="html_593cb2e8fcf49f6f7a1a08366c228cdf" style="width: 100.0%; height: 100.0%;">             <b>Terminal 6</b><br>             Visits: 47<br>             Vessels: 43<br>             Location: (-32.073, 16.585)             </div>`)[0];
+                popup_482d8da1781d4fe5e1c74128a25f1d7e.setContent(html_593cb2e8fcf49f6f7a1a08366c228cdf);
+            
+        
+
+        circle_marker_cc5f77f6dc07f1337d6e5c147b046bc9.bindPopup(popup_482d8da1781d4fe5e1c74128a25f1d7e)
+        ;
+
+        
+    
+    
+            var circle_marker_ebc21766dbc319fa27948e7437534e02 = L.circleMarker(
+                [-33.85211425, 18.422854125],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5, "stroke": true, "weight": 2}
+            ).addTo(map_07c1adaa0f3aaa1fd2cc8c77f7893659);
+        
+    
+        var popup_77bac713fe5e7d78d62090c8e6e711bf = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f9e16284566bd72ebc512025c855291f = $(`<div id="html_f9e16284566bd72ebc512025c855291f" style="width: 100.0%; height: 100.0%;">             <b>Terminal 7</b><br>             Visits: 8<br>             Vessels: 4<br>             Location: (-33.852, 18.423)             </div>`)[0];
+                popup_77bac713fe5e7d78d62090c8e6e711bf.setContent(html_f9e16284566bd72ebc512025c855291f);
+            
+        
+
+        circle_marker_ebc21766dbc319fa27948e7437534e02.bindPopup(popup_77bac713fe5e7d78d62090c8e6e711bf)
+        ;
+
+        
+    
+</script>
+</html>

@@ -8,7 +8,7 @@ scikit-learn>=1.7.0
 # Note: Use pip install directly for GPU support:
 # pip install xgboost[gpu] --extra-index-url https://pypi.nvidia.com
 # Or for conda: conda install -c conda-forge xgboost-gpu
-xgboost>=2.1.0
+xgboost>=3.0.3
 
 scipy>=1.15.0
 
@@ -21,6 +21,8 @@ pyproj>=3.7.1
 shapely>=2.1.1
 pyogrio>=0.11.0
 geopy>=2.4.1
+
+# Shipping Lane Discovery - Time Series Similarity
 dtaidistance>=2.3.10
 
 # Visualization
@@ -28,7 +30,7 @@ matplotlib>=3.10.0
 seaborn>=0.13.0
 plotly>=6.1.0
 
-# Data Processing
+# Data Processing & Performance
 statsmodels>=0.14.0
 numexpr>=2.10.0
 bottleneck>=1.4.0
@@ -48,6 +50,11 @@ notebook-shim>=0.2.0
 requests>=2.32.0
 tqdm>=4.67.0
 holidays>=0.75
+
+# Development & Testing (optional)
+pytest>=8.0.0
+black>=25.0.0
+flake8>=7.0.0
 dtaidistance>=2.3.10
 
 # Optional: Advanced ML (uncomment if needed)
