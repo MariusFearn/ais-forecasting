@@ -181,6 +181,264 @@ jupyter notebook notebooks/intro_to_ml.ipynb
 **🌍 Global Maritime Discovery: Complete ✅**  
 *From 7.9M AIS records to 697 global terminals in 1.2 minutes*
 
+---
+
+## 🌊 **Maritime Discovery Pipeline - Production System**
+
+### 🎯 **Overview**
+The Maritime Discovery Pipeline is a **production-ready system** that transforms the successful vessel exploration notebook into a comprehensive maritime traffic analysis platform. This implementation leverages existing optimized infrastructure to achieve maximum efficiency and real-world maritime intelligence.
+
+### ✨ **Key Features & Capabilities**
+
+#### 🚀 **Performance Optimizations**
+- **DuckDB Integration**: Uses existing DuckDB engine for **10-50x speedup** over pandas
+- **Original Column Names**: Uses `imo`, `mdt`, `lat`, `lon` - no unnecessary renaming overhead
+- **Existing DTW Functions**: Leverages proven DTW clustering from `src/models/clustering.py`
+- **Parquet Support**: Optimized data loading with existing parquet infrastructure
+
+#### 🔍 **Discovery Capabilities**
+- **Vessel Trajectory Extraction**: H3-based spatial indexing with trajectory segmentation
+- **Route Clustering**: DTW-based similarity analysis for shipping route discovery  
+- **Terminal Discovery**: Behavioral analysis to identify ports and terminals worldwide
+- **Maritime Intelligence**: Cargo patterns, vessel types, and operational insights
+
+### 📁 **Production Components**
+
+The pipeline integrates seamlessly with existing project structure:
+
+```
+src/
+├── data/
+│   ├── maritime_loader.py      # NEW: Global AIS data loading (uses existing DuckDB)
+│   ├── duckdb_engine.py        # EXISTING: 10-50x speedup engine  
+│   └── loader.py               # EXISTING: Multi-year AIS loader
+├── features/
+│   ├── trajectory_processor.py # NEW: H3 trajectory processing
+│   ├── route_clustering.py     # NEW: Wrapper for existing DTW functions
+│   ├── terminal_discovery.py   # NEW: Port/terminal discovery algorithm
+│   └── vessel_features.py      # EXISTING: Individual vessel features
+├── models/
+│   └── clustering.py           # EXISTING: DTW distance and clustering functions
+└── utils/
+    └── logging_setup.py        # EXISTING: Performance logging
+
+scripts/
+├── maritime_discovery.py      # NEW: Main production pipeline
+└── test_maritime_discovery.py # NEW: Integration testing
+
+config/
+├── maritime_discovery.yaml      # NEW: Production configuration
+└── maritime_discovery_test.yaml # NEW: Testing configuration
+```
+
+### 🚀 **Quick Start - Maritime Discovery**
+
+#### **1. Environment Setup**
+```bash
+# Activate the ML environment (required)
+conda activate ML
+
+# Verify dependencies
+cd /home/marius/repo_linux/ais-forecasting
+pip install -r requirements.txt
+```
+
+#### **2. Integration Test**
+```bash
+# Test the pipeline components
+python scripts/test_maritime_discovery.py
+```
+
+#### **3. Test Run (Small Dataset)**
+```bash
+# Run with test configuration (50 vessels, 1 month)
+python scripts/maritime_discovery.py \
+    --config config/maritime_discovery_test.yaml \
+    --years 2024 \
+    --max-vessels 50 \
+    --output-dir ./data/processed/test_discovery
+```
+
+#### **4. Production Run (Full Scale)**
+```bash
+# Full production run (all vessels, multiple years)
+python scripts/maritime_discovery.py \
+    --config config/maritime_discovery.yaml \
+    --years 2023 2024 \
+    --output-dir ./data/processed/maritime_discovery
+```
+
+### 📊 **Pipeline Architecture**
+
+#### **Phase 1: Global Data Loading**
+- Uses existing `DuckDBEngine` for optimized loading (10-50x speedup)
+- Supports multi-year processing: 2018-2024
+- Memory-efficient chunked processing
+- Original column validation: `imo`, `mdt`, `lat`, `lon`, `speed`
+
+#### **Phase 2: Trajectory Extraction**  
+- H3 spatial indexing (resolution 5 = ~30km cells)
+- Trajectory segmentation by time gaps
+- Speed filtering and outlier removal
+- Interpolation for missing data points
+
+#### **Phase 3: Trajectory Processing**
+- H3 sequence generation for vessel paths
+- Smoothing and noise reduction algorithms
+- Batch processing for memory efficiency
+- Comprehensive trajectory metrics calculation
+
+#### **Phase 4: Route Clustering**
+- Uses existing `compute_dtw_distance_matrix()` function
+- Uses existing `cluster_routes()` function from proven codebase
+- DTW-based similarity analysis for shipping lanes
+- Handles up to 150 routes efficiently (performance optimized)
+- DBSCAN clustering for automated route discovery
+
+#### **Phase 5: Terminal Discovery**
+- Stationary period detection (speed < 1 knot for 2+ hours)
+- Vessel convergence analysis at geographic points
+- Cargo loading pattern analysis (draught changes)
+- Terminal type classification (loading/export/import/mixed)
+- Activity scoring and validation (minimum vessel thresholds)
+
+#### **Phase 6: Results Export**
+- Parquet format for maximum efficiency
+- YAML summaries and analysis reports
+- Visualization-ready outputs for mapping
+- Comprehensive logging and performance metrics
+
+### ⚙️ **Configuration System**
+
+#### **Production Config** (`config/maritime_discovery.yaml`)
+```yaml
+# Full dataset processing
+data_loading:
+  use_duckdb: true              # Use existing optimization
+  vessel_sample_size: null      # null = all vessels
+  
+# Route Clustering  
+route_clustering:
+  max_routes_for_dtw: 150       # DTW performance limit
+  
+# Terminal Discovery
+terminal_discovery:
+  stationary_speed_threshold: 1.0    # Knots
+  min_stationary_duration_hours: 2.0 # Hours
+  min_vessels_for_terminal: 3        # Vessel count
+```
+
+#### **Test Config** (`config/maritime_discovery_test.yaml`)
+```yaml
+# Small dataset for testing (50 vessels, 1 month)
+data_loading:
+  vessel_sample_size: 50        # Test with limited vessels
+  date_range:
+    start_date: "2024-01-01"
+    end_date: "2024-01-31"
+    
+# Relaxed thresholds for testing
+terminal_discovery:
+  min_stationary_duration_hours: 1.0  # Shorter for testing
+  min_vessels_for_terminal: 2          # Lower threshold
+  min_activity_score: 0.5              # Relaxed validation
+```
+
+### 📈 **Expected Outputs**
+
+#### **Generated Data Files**
+```
+data/processed/maritime_discovery/
+├── trajectories_YYYYMMDD.parquet     # Processed vessel trajectories with H3 sequences
+├── trajectory_metrics_YYYYMMDD.parquet # Statistical analysis of trajectories
+├── terminals_YYYYMMDD.parquet        # Discovered ports and terminals
+├── clustering_analysis_YYYYMMDD.yaml # Route clustering statistics
+└── discovery_summary_YYYYMMDD.yaml   # Complete pipeline summary
+```
+
+#### **Analysis Results**
+- **Discovered Terminals**: Location, vessel types, cargo patterns, activity scores
+- **Route Clusters**: Shipping routes grouped by DTW similarity analysis
+- **Trajectory Metrics**: Distance, duration, complexity, and efficiency statistics
+- **Performance Logs**: Runtime tracking and memory usage optimization
+
+### 🔧 **Technical Implementation**
+
+#### **Efficiency Design Decisions**
+1. **Reuse Existing Infrastructure**: Leverages DuckDB engine and DTW functions
+2. **Original Column Names**: Avoids unnecessary data transformation overhead  
+3. **Chunked Processing**: Memory-efficient handling of large datasets
+4. **Parquet I/O**: Optimized data serialization and loading
+
+#### **Integration with Existing Code**
+- Uses existing `AISDataLoader` for multi-year support
+- Integrates with existing `DuckDBEngine` for 10-50x speedup
+- Calls existing `compute_dtw_distance_matrix` and `cluster_routes` functions
+- Maintains compatibility with existing feature extraction pipeline
+
+#### **Performance Metrics**
+- **DuckDB**: 10-50x speedup over pandas operations
+- **H3 Indexing**: Efficient spatial operations for trajectory analysis
+- **Batch Processing**: Controlled memory usage for large datasets
+- **DTW Limiting**: Computational complexity management (max 150 routes)
+
+### 🧪 **Testing & Validation**
+
+#### **Integration Testing**
+```bash
+# Run comprehensive integration tests
+python scripts/test_maritime_discovery.py
+
+# Expected output:
+# ✅ Maritime loader imported
+# ✅ Trajectory processor imported  
+# ✅ Route clustering imported
+# ✅ Terminal discovery imported
+# ✅ Existing DTW functions accessible
+# ✅ Existing DuckDB infrastructure accessible
+```
+
+#### **Validation Testing**
+- Small dataset validation (test config with 50 vessels)
+- Result consistency verification across runs
+- Output format validation (Parquet/YAML compatibility)
+- Memory and performance profiling
+
+### 📚 **Algorithm Sources**
+
+#### **Proven Components**
+- **Terminal Discovery**: Extracted from successful `vessel_exploration.ipynb`
+- **DTW Clustering**: Uses existing proven implementation in `src/models/clustering.py`
+- **H3 Indexing**: Uber H3 geospatial indexing system
+- **DuckDB Engine**: Existing optimized data processing infrastructure
+
+#### **Research Applications**
+- **Maritime Intelligence**: Port traffic analysis and shipping route optimization
+- **Supply Chain Analytics**: Global maritime connectivity mapping
+- **Infrastructure Planning**: Data-driven insights for port development
+- **Commercial Applications**: Logistics optimization and competitive intelligence
+
+### 🎯 **Next Steps**
+
+1. **Run Integration Tests**: `python scripts/test_maritime_discovery.py`
+2. **Test Configuration**: Run with small dataset to verify outputs
+3. **Production Deployment**: Execute full pipeline on complete dataset
+4. **Result Analysis**: Analyze discovered routes and terminals
+5. **Visualization**: Create interactive maps and dashboards
+
+### 📞 **Support & Troubleshooting**
+
+For issues or questions:
+1. Check the integration test results for component validation
+2. Review configuration parameters in YAML files
+3. Check logs in output directory for detailed error information
+4. Verify conda ML environment is active: `conda activate ML`
+5. Ensure all dependencies are installed: `pip install -r requirements.txt`
+
+**📋 Complete Documentation**: See `MARITIME_DISCOVERY.md` for detailed technical documentation.
+
+---
+
 ## 🚀 Quick Start - Unified System
 
 ### **🎮 List Available Experiments**

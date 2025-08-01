@@ -1,0 +1,78 @@
+# Global Maritime Terminal Discovery Configuration
+# This configuration file contains all parameters for the worldwide AIS data analysis
+# for terminal and route discovery pipeline
+
+global_discovery:
+  name: "Global Maritime Terminal Discovery"
+  description: "Worldwide AIS data analysis for terminal and route discovery"
+  version: "1.0.0"
+  
+data:
+  input_files:
+    # Raw AIS data files (2018-2024)
+    - "data/raw/ais_cape_data_2018.pkl"
+    - "data/raw/ais_cape_data_2019.pkl"
+    - "data/raw/ais_cape_data_2020.pkl"
+    - "data/raw/ais_cape_data_2021.pkl"
+    - "data/raw/ais_cape_data_2022.pkl"
+    - "data/raw/ais_cape_data_2023.pkl"
+    - "data/raw/ais_cape_data_2024.pkl"
+  date_range:
+    start: "2018-01-01"
+    end: "2024-12-31"
+  
+processing:
+  memory_limit_gb: 32
+  max_vessels_per_batch: 1000
+  h3_resolution: 5
+  min_journey_length: 5
+  max_journey_length: 1000
+  speed_threshold_knots: 0.5  # Minimum speed to consider vessel moving
+  time_gap_hours: 6           # Maximum time gap to consider continuous journey
+  
+terminals:
+  min_visits: 10
+  min_vessels: 3
+  clustering:
+    eps_km: 5.0               # DBSCAN radius in kilometers
+    min_samples: 3            # Minimum samples for cluster formation
+  validation:
+    max_terminal_size_km: 50  # Maximum reasonable terminal size
+    min_dwell_time_hours: 1   # Minimum time at terminal to count as visit
+  output_path: "data/processed/global_terminals.gpkg"
+  
+routes:
+  max_routes_for_dtw: 150     # Performance limit for DTW computation
+  dtw_distance_threshold: 0.5
+  clustering:
+    eps: 0.3                  # DBSCAN epsilon for route clustering
+    min_samples: 5            # Minimum routes per cluster
+  sequence_limits:
+    min_length: 5             # Minimum H3 points in route
+    max_length: 200           # Maximum H3 points in route (performance)
+  sampling:
+    enable_sampling: true     # Enable route sampling for large datasets
+    sample_strategy: "diverse" # Options: "random", "diverse", "representative"
+  output_path: "data/processed/global_routes.parquet"
+  
+visualization:
+  max_map_terminals: 500      # Performance limit for interactive map
+  map_center: [20, 0]         # Global map center (lat, lon)
+  zoom_start: 2               # Initial zoom level
+  terminal_size_scaling: true # Scale marker size by activity
+  color_scheme: "traffic"     # Options: "traffic", "region", "size"
+  output_path: "visualizations/global_maritime_terminals.html"
+  
+performance:
+  enable_progress_bars: true
+  log_level: "INFO"           # Options: DEBUG, INFO, WARNING, ERROR
+  save_checkpoints: true
+  checkpoint_interval_minutes: 5
+  enable_memory_monitoring: true
+  max_processing_time_hours: 2
+  
+outputs:
+  base_directory: "data/processed"
+  create_timestamp_folders: false
+  compress_outputs: true
+  save_intermediate_results: true

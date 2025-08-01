@@ -1,0 +1,91 @@
+# Maritime Discovery Pipeline - Test Configuration
+# Optimized for quick validation and development testing
+
+# Data Loading Configuration (small dataset for testing)
+data_loading:
+  use_duckdb: true
+  use_parquet: true
+  vessel_sample_size: 50        # Test with only 50 vessels
+  date_range:
+    start_date: "2024-01-01"    # Recent data only
+    end_date: "2024-01-31"      # One month for testing
+  memory_optimization: true
+
+# Trajectory Extraction Configuration (relaxed for testing)
+trajectory_extraction:
+  h3_resolution: 5
+  min_points_per_trajectory: 5  # Lower threshold for testing
+  max_gap_hours: 12             # More lenient for sparse test data
+  speed_filter:
+    min_speed: 0.1
+    max_speed: 50
+  spatial_bounds: null
+
+# Trajectory Processing Configuration
+trajectory_processing:
+  h3_resolution: 5
+  sequence_limits:
+    min_length: 3               # Lower minimum for testing
+    max_length: 100             # Smaller for faster processing
+  interpolation:
+    enable: true
+    max_gap_hours: 4
+  smoothing:
+    enable: true
+    window_size: 3
+
+# Route Clustering Configuration (smaller scale)
+route_clustering:
+  max_routes_for_dtw: 50        # Smaller for faster testing
+  sequence_limits:
+    min_length: 3
+    max_length: 100
+  dtw_parameters:
+    distance_metric: "euclidean"
+    step_pattern: "symmetric2"
+  clustering_algorithm: "dbscan"
+  clustering_parameters:
+    eps: 0.3
+    min_samples: 2              # Lower threshold for testing
+
+# Terminal Discovery Configuration (relaxed thresholds)
+terminal_discovery:
+  stationary_speed_threshold: 1.0
+  min_stationary_duration_hours: 1.0  # Shorter for testing
+  terminal_proximity_km: 5.0
+  min_vessels_for_terminal: 2          # Lower threshold for testing
+  h3_resolution: 8
+  min_activity_score: 0.5              # Lower threshold for testing
+  cargo_analysis:
+    enable: true
+    draught_threshold: 10.0            # Lower threshold
+    significant_change: 1.5
+
+# Performance Configuration (testing optimized)
+performance:
+  batch_size: 500               # Smaller batches for testing
+  max_workers: 2                # Fewer workers to avoid resource contention
+  chunk_size: 10000             # Smaller chunks
+  memory_limit_gb: 4            # Lower memory usage
+
+# Output Configuration
+output:
+  save_intermediate: true
+  compression: "snappy"
+  include_raw_sequences: true   # Include for testing validation
+  generate_visualizations: true
+  
+# Quality Control (relaxed for testing)
+quality_control:
+  validate_coordinates: true
+  validate_timestamps: true
+  remove_outliers: true
+  outlier_thresholds:
+    speed_percentile: 99        # Less aggressive filtering
+    distance_km: 2000           # More lenient
+
+# Logging Configuration (verbose for testing)
+logging:
+  level: "DEBUG"                # More verbose logging for testing
+  log_performance: true
+  log_data_quality: true

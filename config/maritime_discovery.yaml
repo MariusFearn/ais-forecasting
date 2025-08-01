@@ -1,0 +1,95 @@
+# Maritime Discovery Pipeline Configuration
+# Optimized for production use with existing infrastructure
+
+# Data Loading Configuration (leveraging existing DuckDB optimization)
+data_loading:
+  use_duckdb: true              # Use existing DuckDB engine for 10-50x speedup
+  use_parquet: true             # Use optimized parquet files
+  vessel_sample_size: null      # null = all vessels, or specify number for testing
+  date_range:
+    start_date: null            # null = use all available data
+    end_date: null
+  memory_optimization: true     # Use chunked processing for large datasets
+
+# Trajectory Extraction Configuration
+trajectory_extraction:
+  h3_resolution: 5              # H3 resolution for spatial indexing
+  min_points_per_trajectory: 10 # Minimum AIS points to form a trajectory
+  max_gap_hours: 6              # Maximum time gap before starting new trajectory
+  speed_filter:
+    min_speed: 0.1              # Filter out stationary noise
+    max_speed: 50               # Filter out unrealistic speeds
+  spatial_bounds:               # Optional geographic bounds
+    min_lat: null
+    max_lat: null
+    min_lon: null
+    max_lon: null
+
+# Trajectory Processing Configuration
+trajectory_processing:
+  h3_resolution: 5              # Consistent with extraction
+  sequence_limits:
+    min_length: 5               # Minimum H3 cells in sequence
+    max_length: 200             # Maximum for DTW performance
+  interpolation:
+    enable: true                # Fill gaps in trajectories
+    max_gap_hours: 2            # Maximum gap to interpolate
+  smoothing:
+    enable: true                # Smooth noisy trajectories
+    window_size: 3              # Moving average window
+
+# Route Clustering Configuration (using existing DTW implementation)
+route_clustering:
+  max_routes_for_dtw: 150       # Limit for DTW performance
+  sequence_limits:
+    min_length: 5               # Match trajectory processing
+    max_length: 200
+  dtw_parameters:               # Passed to existing DTW functions
+    distance_metric: "euclidean"
+    step_pattern: "symmetric2"
+  clustering_algorithm: "dbscan" # Algorithm used in existing implementation
+  clustering_parameters:
+    eps: 0.3                    # DBSCAN epsilon parameter
+    min_samples: 3              # Minimum samples for cluster
+
+# Terminal Discovery Configuration
+terminal_discovery:
+  stationary_speed_threshold: 1.0    # Speed below which vessel is stationary (knots)
+  min_stationary_duration_hours: 2.0 # Minimum time to consider as terminal visit
+  terminal_proximity_km: 5.0         # Radius around terminal center
+  min_vessels_for_terminal: 3        # Minimum vessels to validate terminal
+  h3_resolution: 8                   # Higher resolution for precise terminal location
+  min_activity_score: 1.0            # Minimum activity for terminal validation
+  cargo_analysis:
+    enable: true                     # Analyze cargo loading patterns
+    draught_threshold: 12.0          # Draught above which vessel is "loaded"
+    significant_change: 2.0          # Minimum draught change for cargo operation
+
+# Performance Configuration
+performance:
+  batch_size: 1000              # Records per batch for memory management
+  max_workers: 4                # Parallel processing workers
+  chunk_size: 50000             # Size of data chunks for processing
+  memory_limit_gb: 8            # Memory usage limit
+
+# Output Configuration
+output:
+  save_intermediate: true       # Save intermediate processing results
+  compression: "snappy"         # Parquet compression
+  include_raw_sequences: false  # Include raw H3 sequences in output
+  generate_visualizations: true # Create HTML visualizations
+  
+# Quality Control
+quality_control:
+  validate_coordinates: true    # Check for valid lat/lon
+  validate_timestamps: true     # Check for valid time sequences
+  remove_outliers: true         # Remove obvious data errors
+  outlier_thresholds:
+    speed_percentile: 99.5      # Remove speeds above this percentile
+    distance_km: 1000           # Remove jumps larger than this
+
+# Logging Configuration
+logging:
+  level: "INFO"                 # DEBUG, INFO, WARNING, ERROR
+  log_performance: true         # Log timing and memory usage
+  log_data_quality: true        # Log data validation results
