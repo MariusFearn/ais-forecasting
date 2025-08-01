@@ -47,6 +47,7 @@ notebook-shim>=0.2.0
 requests>=2.32.0
 tqdm>=4.67.0
 holidays>=0.75
+dtaidistance>=2.3.10
 
 # Optional: Advanced ML (uncomment if needed)
 # pytorch-lightning>=2.0.0
